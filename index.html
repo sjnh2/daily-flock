@@ -1,0 +1,2166 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Daily Flock</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}
+img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
+
+:root{
+  --bg:#e8eff0; --surface:#ffffff; --ink:#132730; --muted:#52676f; --line:#cbd9dc; --accent:#0d6965; --on-accent:#ffffff;
+  --common:#74847f; --rare:#2474c9; --epic:#8445c9; --legendary:#c98a08; --only:#d6336c;
+  --card-face:#fbfdfc; --card-ink:#132730; --card-muted:#52676f;
+  --display:"Bricolage Grotesque","Trebuchet MS",sans-serif; --body:"Figtree",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0d191f; --surface:#172830; --ink:#e8f1f1; --muted:#94aab1; --line:#2a414b; --accent:#55c8bd; --on-accent:#06201e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d191f; --surface:#172830; --ink:#e8f1f1; --muted:#94aab1; --line:#2a414b; --accent:#55c8bd; --on-accent:#06201e; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45}
+.wrap{max-width:460px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px calc(92px + env(safe-area-inset-bottom,0px))}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+h1{font-family:var(--display);font-weight:800;font-size:28px;margin:0;letter-spacing:-.01em}
+h2{font-family:var(--display);font-weight:800;font-size:20px;margin:0;text-wrap:balance}
+#total{font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;font-size:14px}
+#mute{background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:8px 14px;font-size:14px;font-weight:600;white-space:nowrap}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn{background:var(--accent);color:var(--on-accent);border:0;border-radius:14px;padding:15px 18px;font-weight:600;font-size:17px;width:100%}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.quiet{background:transparent;color:var(--accent);padding:10px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.center{text-align:center;align-items:center}
+.note{color:var(--muted);font-size:14px}
+#status:empty{display:none}
+#status{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:14px;margin-bottom:12px}
+
+.card{container-type:inline-size;display:block;width:100%;aspect-ratio:5/7;border:0;padding:0;background:none;position:relative;text-align:left}
+.face{position:absolute;inset:0;border-radius:8cqi;padding:4cqi;display:flex;flex-direction:column;gap:2.5cqi;background:var(--rc);color:var(--card-ink)}
+.common{--rc:var(--common);--sky:#dde7e4}.rare{--rc:var(--rare);--sky:#d3e8fa}.epic{--rc:var(--epic);--sky:#e9dcf8}.legendary{--rc:var(--legendary);--sky:#fbeabd}.only{--rc:var(--only);--sky:#ffe3ee}
+.face.only{background:linear-gradient(130deg,#ff5f8f,#ffb43a,#47d6a4,#3ea6ff,#a45cff,#ff5f8f);background-size:300% 300%;animation:holo 6s linear infinite}
+@keyframes holo{to{background-position:300% 0}}
+.nm{font-family:var(--display);font-weight:800;font-size:9cqi;line-height:1.05;background:var(--card-face);border-radius:4.5cqi;padding:3cqi 4cqi;min-height:25cqi;display:flex;align-items:center;overflow-wrap:anywhere}
+.art{flex:1;min-height:0;border-radius:4.5cqi;background:var(--sky);display:flex;align-items:center;overflow:hidden}
+.face.only .art{background:linear-gradient(160deg,#fff1c9,#ffe0ee 40%,#dcefff 75%,#e5fbe9)}
+.art svg{width:100%;height:100%;display:block}
+.art svg [fill="#f6f5f0"],.art svg [fill="#fbfaf6"],.art svg [fill="#fbfbf9"],.art svg [fill="#f6f7f5"],.art svg [fill="#fafbf8"],.art svg [fill="#fbfaf5"],.art svg [fill="#f7f9f9"]{stroke:rgba(20,40,50,.35);stroke-width:1}
+.ft{background:var(--card-face);border-radius:4.5cqi;padding:3cqi 4cqi}
+.sci{font-style:italic;font-size:6cqi;color:var(--card-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.tier{display:flex;justify-content:space-between;gap:2cqi;font-weight:600;font-size:6.5cqi}
+.pips{color:var(--card-muted);letter-spacing:.08em}
+.badge{position:absolute;bottom:-7px;right:-4px;background:var(--ink);color:var(--bg);font-weight:600;font-size:12px;border-radius:99px;padding:2px 8px;z-index:2;font-variant-numeric:tabular-nums}
+.card.unknown .face{background:var(--surface);border:2px dashed var(--rc);color:var(--muted)}
+.card.unknown .art{background:transparent}
+.card.unknown svg *{fill:var(--line)!important;stroke:var(--line)!important}
+.card.unknown .nm{background:transparent;justify-content:center;color:var(--muted)}
+.card.unknown .ft{background:transparent;text-align:center;font-size:7cqi;font-weight:600}
+
+.big{width:min(290px,76vw,31vh);margin:0 auto;perspective:900px;position:relative}
+.flip{display:block;position:relative;width:100%;aspect-ratio:5/7;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.3,.7,.2,1)}
+.flip.up{transform:rotateY(180deg)}
+.side{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.side.front{transform:rotateY(180deg)}
+.back{container-type:inline-size;position:absolute;inset:0;border-radius:23px;background:#0f4f59;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.back svg{width:100%;height:100%}
+.dots{display:flex;gap:7px;justify-content:center}
+.dots i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--accent)}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 8px;width:100%}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 10px}
+.grid4 .nm{font-size:10.5cqi;padding:3cqi;line-height:1.05;min-height:38cqi}
+.grid4 .ft{display:none}
+.deck{width:min(220px,58vw);margin:10px auto 6px;position:relative;aspect-ratio:5/7}
+.deck .back{box-shadow:0 0 0 3px var(--bg)}
+.deck .back:nth-child(1){transform:rotate(-8deg)}.deck .back:nth-child(2){transform:rotate(6deg)}
+
+section.group{margin-bottom:26px}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);display:flex;justify-content:center;gap:8px;padding:8px max(16px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));z-index:10}
+nav button{flex:1;max-width:140px;background:none;border:0;border-radius:12px;padding:11px;font-weight:600;color:var(--muted)}
+nav button[aria-current="page"]{background:var(--bg);color:var(--ink)}
+#sheet{position:fixed;inset:0;background:rgba(4,14,18,.82);z-index:20;display:flex;flex-direction:column;overflow-y:auto;padding:calc(20px + env(safe-area-inset-top,0px)) 20px calc(20px + env(safe-area-inset-bottom,0px))}
+#sheet .inner{margin:auto;width:100%;max-width:340px;display:flex;flex-direction:column;gap:14px}
+#sheet .info{background:var(--surface);border-radius:14px;padding:14px}
+@media (prefers-reduced-motion:reduce){.flip{transition:none}.face.only{animation:none}}
+
+.face.epic,.face.legendary,.face.only{overflow:hidden}
+.face.epic::after,.face.legendary::after,.face.only::after{content:"";position:absolute;top:-10%;bottom:-10%;left:0;width:34%;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);transform:translateX(-160%) skewX(-18deg);animation:shine 3.2s ease-in-out infinite}
+@keyframes shine{0%,35%{transform:translateX(-160%) skewX(-18deg)}80%,100%{transform:translateX(420%) skewX(-18deg)}}
+.card.unknown .face::after{display:none}
+
+.reveal>*{position:relative;z-index:9}
+.top{height:46px;width:100%;display:flex;align-items:center;justify-content:center;font-weight:600}
+.top .dots{transition:opacity .2s}
+.top.shouting .dots{opacity:0}
+#shout{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;white-space:nowrap}
+.shout{font-family:var(--display);font-weight:800;font-size:clamp(28px,9.5vw,40px);color:#fff;text-shadow:0 0 6px #000,0 0 18px var(--g),0 3px 0 var(--g);animation:slam .55s cubic-bezier(.2,1.6,.4,1) both}
+.shout.epic{--g:#8b2fe0}.shout.legendary{--g:#d98a00}.shout.only{--g:#e0206f}
+@keyframes slam{from{transform:scale(3);opacity:0}to{transform:scale(1);opacity:1}}
+#says{min-height:48px;font-weight:600}
+body.lit .reveal #says,body.lit .reveal .btn.quiet{color:#fff}
+#dim{position:fixed;inset:0;background:rgba(5,10,24,.86);opacity:0;pointer-events:none;transition:opacity .45s;z-index:7}
+body.lit #dim{opacity:1}
+#rays{position:fixed;width:400px;height:400px;margin:-200px 0 0 -200px;left:50%;top:50%;border-radius:50%;pointer-events:none;z-index:8;visibility:hidden;will-change:transform;
+  background:radial-gradient(closest-side,transparent 20%,rgba(5,10,24,.55) 70%,#050a18 100%),repeating-conic-gradient(var(--glow,#fff) 0 7deg,#050a18 7deg 20deg)}
+#rays.on{visibility:visible;animation:spin 24s linear infinite}
+#rays.on.only{background:radial-gradient(closest-side,transparent 20%,rgba(5,10,24,.55) 70%,#050a18 100%),conic-gradient(#ff5f8f,#050a18,#ffb43a,#050a18,#47d6a4,#050a18,#3ea6ff,#050a18,#a45cff,#050a18,#ff5f8f,#050a18,#ffb43a,#050a18,#47d6a4,#050a18,#3ea6ff,#050a18,#a45cff,#050a18,#ff5f8f);animation-duration:12s}
+@keyframes spin{from{transform:scale(2.4)}to{transform:scale(2.4) rotate(360deg)}}
+#sparks{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:30}
+#flash{position:fixed;inset:0;pointer-events:none;z-index:29;opacity:0}
+#flash.legendary{animation:flash .8s ease-out;background:#ffe9a8}
+#flash.only{animation:flash 1.2s ease-out;background:#fff}
+@keyframes flash{0%{opacity:0}12%{opacity:.85}100%{opacity:0}}
+
+.big::before{content:"";position:absolute;inset:-22% -28%;border-radius:50%;background:radial-gradient(closest-side,var(--glow) 45%,transparent);opacity:0;pointer-events:none;transform:translateZ(-1px)}
+.big.charging{animation:rumble .11s linear infinite,swell var(--wait) ease-in forwards}
+.big.charging::before{animation:beat .45s ease-in-out infinite alternate}
+.big.glow.t-rare::before{opacity:.5}
+.big.glow.t-epic::before,.big.glow.t-legendary::before,.big.glow.t-only::before{animation:beat 1.1s ease-in-out infinite alternate}
+.big.t-only.charging::before,.big.t-only.glow::before{background:conic-gradient(#ff5f8f,#ffb43a,#47d6a4,#3ea6ff,#a45cff,#ff5f8f);-webkit-mask:radial-gradient(closest-side,#000 55%,transparent);mask:radial-gradient(closest-side,#000 55%,transparent)}
+@keyframes rumble{0%{translate:-2px 1px;rotate:-.7deg}50%{translate:2px -2px;rotate:.8deg}100%{translate:-1px 2px;rotate:-.4deg}}
+@keyframes swell{from{scale:.97}to{scale:1.08}}
+@keyframes beat{from{opacity:.35;transform:scale(.88)}to{opacity:1;transform:scale(1.06)}}
+.big.pop{animation:pop .7s cubic-bezier(.2,1.5,.4,1)}
+.big.pop.quake{animation:quake .7s ease-out}
+@keyframes pop{0%{scale:1.08}45%{scale:1.14}100%{scale:1}}
+@keyframes quake{0%{scale:1.2;translate:0 0}15%{translate:-14px 6px}30%{translate:12px -8px}45%{translate:-9px -4px}60%{translate:7px 5px}80%{translate:-3px 0}100%{scale:1;translate:0 0}}
+.grid4.deal .card{animation:deal .4s cubic-bezier(.2,1.4,.4,1) both;animation-delay:calc(var(--i) * 70ms)}
+@keyframes deal{from{transform:translateY(24px) scale(.7);opacity:.2}}
+.grid4 .card .face.epic{box-shadow:0 0 12px 1px #a855f7}
+.grid4 .card .face.legendary{box-shadow:0 0 14px 3px #ffb703}
+.grid4 .card .face.only{box-shadow:0 0 16px 4px #ff5fa2}
+
+.odds button{display:flex;width:100%;justify-content:space-between;align-items:center;background:none;border:0;border-top:1px solid var(--line);padding:12px 0;text-align:left;font-variant-numeric:tabular-nums}
+.odds .pc{color:var(--muted)}
+.odds .note{margin:2px 0 8px}
+#search{width:100%;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+#chips{display:flex;flex-wrap:wrap;gap:8px}
+#chips button{background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:8px 12px;font-size:14px;font-weight:600}
+#chips button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+#chips .sw{margin-right:6px}
+.sw{display:inline-block;width:12px;height:12px;border-radius:4px;background:var(--rc);margin-right:9px}
+.sw.only{background:linear-gradient(135deg,#ff5f8f,#ffb43a,#47d6a4,#3ea6ff)}
+#tilt{perspective:700px;touch-action:none}
+#tilt .card{transition:transform .12s;transform-style:preserve-3d}
+#tilt.t-rare .face{box-shadow:0 0 24px 3px var(--glow)}
+#tilt.t-epic .face,#tilt.t-legendary .face,#tilt.t-only .face{box-shadow:0 0 36px 8px var(--glow)}
+
+/* Home Page Fact Card */
+.fact-widget{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:14px;box-shadow:0 4px 12px rgba(0,0,0,.04)}
+.fact-card-btn{width:min(240px,65vw);margin:0 auto;cursor:pointer;transition:transform .15s cubic-bezier(.2,1.2,.4,1)}
+.fact-card-btn:active{transform:scale(.95)}
+.fact-box{background:var(--bg);border-radius:12px;padding:14px;text-align:center}
+.fact-box p{font-size:15px;line-height:1.4;font-weight:500}
+.fact-box .bird-tag{font-weight:700;font-family:var(--display);font-size:17px;color:var(--accent);margin-bottom:4px}
+.store-pill{display:inline-block;background:var(--accent);color:var(--on-accent);padding:4px 10px;border-radius:99px;font-weight:700;font-size:13px;margin-bottom:6px}
+
+@media (prefers-reduced-motion:reduce){.face::after,.big,.big::before,.big *,.shout,#rays,.grid4 .card{animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header><div><h1>Daily Flock</h1><div id="total"></div></div><button id="mute" type="button">Sound on</button></header>
+  <div id="status" role="status"></div>
+  <main id="view"></main>
+</div>
+
+<nav aria-label="Sections">
+  <button id="tab-home" aria-current="page">Home</button>
+  <button id="tab-today">Packs</button>
+  <button id="tab-book">Collection</button>
+</nav>
+
+<div id="sheet" role="dialog" aria-modal="true" aria-label="Bird card" hidden></div>
+<div id="dim"></div><div id="rays"></div><div id="flash"></div><canvas id="sparks" aria-hidden="true"></canvas>
+
+<script type="text/plain" data-tier="common">
+=duck
+Gadwall|Mareca strepera|ngnsd
+American Wigeon|Mareca americana|etnts|Kw
+Eurasian Wigeon|Mareca penelope|xgsqs|Kc
+Northern Pintail|Anas acuta|mgswd
+Northern Shoveler|Spatula clypeata|fwnzk
+Blue-winged Teal|Spatula discors|jnitk
+Cinnamon Teal|Spatula cyanoptera|xxizk
+Green-winged Teal|Anas carolinensis|xgncd
+Eurasian Teal|Anas crecca|xgdck
+American Black Duck|Anas rubripes|tmmmh
+Mottled Duck|Anas fulvigula|tnmno
+Pacific Black Duck|Anas superciliosa|cmmtd
+Yellow-billed Duck|Anas undulata|ndmny
+Indian Spot-billed Duck|Anas poecilorhyncha|cnmtd
+Red-billed Teal|Anas erythrorhyncha|mnntr
+Lesser Scaup|Aythya affinis|kskwi
+Greater Scaup|Aythya marila|fskwi
+Ring-necked Duck|Aythya collaris|kkksd
+Redhead|Aythya americana|xggsi
+Canvasback|Aythya valisineria|xwswk
+Tufted Duck|Aythya fuligula|kkkwi|C
+Common Pochard|Aythya ferina|xsgsd
+Bufflehead|Bucephala albeola|pkkwd|Ew
+Common Goldeneye|Bucephala clangula|fwkwk|Ew
+Ruddy Duck|Oxyura jamaicensis|kxxxi|Ew
+Hooded Merganser|Lophodytes cucullatus|kkkzk|CEw
+Common Merganser|Mergus merganser|fwkwr
+Red-breasted Merganser|Mergus serrator|fgkzr|C
+Common Eider|Somateria mollissima|wwkkv|Kk
+Surf Scoter|Melanitta perspicillata|kkkko
+White-winged Scoter|Melanitta deglandi|kkwko
+Muscovy Duck|Cairina moschata|kkfkr
+Egyptian Goose|Alopochen aegyptiaca|ctxcq
+Australian Wood Duck|Chenonetta jubata|mgsgd
+=goose
+Greylag Goose|Anser anser|ggdso
+Snow Goose|Anser caerulescens|wwkwq
+Greater White-fronted Goose|Anser albifrons|nnmto
+Pink-footed Goose|Anser brachyrhynchus|mngtq
+Cackling Goose|Branta hutchinsii|knmck|Ew
+Brant|Branta bernicla|kmmsk
+Barnacle Goose|Branta leucopsis|wsgwk|Bk
+=swan
+Mute Swan|Cygnus olor|wwwwo
+Tundra Swan|Cygnus columbianus|wwwwk
+Black Swan|Cygnus atratus|kkdkr
+=rail
+American Coot|Fulica americana|kddgw
+Eurasian Coot|Fulica atra|kkddw
+Common Gallinule|Gallinula galeata|kdmdr
+Common Moorhen|Gallinula chloropus|kmmdr
+Sora|Porzana carolina|tnnsy
+Virginia Rail|Rallus limicola|gnnzo
+Water Rail|Rallus aquaticus|nnnjr
+Purple Swamphen|Porphyrio porphyrio|ubfur
+=grebe
+Pied-billed Grebe|Podilymbus podiceps|nnmts
+Little Grebe|Tachybaptus ruficollis|mmmtk
+Horned Grebe|Podiceps auritus|kdkxk|Eh
+Eared Grebe|Podiceps nigricollis|kkkxk|Eh
+Great Crested Grebe|Podiceps cristatus|knnwq|CEw
+Western Grebe|Aechmophorus occidentalis|kddwy
+=cormorant
+Double-crested Cormorant|Nannopterum auritum|kkmko
+Great Cormorant|Phalacrocorax carbo|kkmks|Ew
+Neotropic Cormorant|Nannopterum brasilianum|kkdkt
+=heron
+Great Egret|Ardea alba|wwwwy
+Snowy Egret|Egretta thula|wwwwk
+Western Cattle Egret|Bubulcus ibis|cwwwo
+Little Egret|Egretta garzetta|wwwwk
+Green Heron|Butorides virescens|ffjxd
+Grey Heron|Ardea cinerea|wggsh
+Black-crowned Night Heron|Nycticorax nycticorax|wdgsk|Kk
+Little Blue Heron|Egretta caerulea|xjjjj
+Tricolored Heron|Egretta tricolor|jjjwh
+Squacco Heron|Ardeola ralloides|ttwws
+Purple Heron|Ardea purpurea|znjxh
+=ibis
+White Ibis|Eudocimus albus|wwwwo
+White-faced Ibis|Plegadis chihi|xxfxq
+Glossy Ibis|Plegadis falcinellus|xxfxn
+Hadada Ibis|Bostrychia hagedash|nnvnd
+African Sacred Ibis|Threskiornis aethiopicus|kwwwk
+Australian White Ibis|Threskiornis molucca|kwwwk
+=shore
+Killdeer|Charadrius vociferus|nnnwk|Bw
+Semipalmated Plover|Charadrius semipalmatus|nnnwo
+Common Ringed Plover|Charadrius hiaticula|nnnwo
+Little Ringed Plover|Thinornis dubius|ntnwk
+Black-bellied Plover|Pluvialis squatarola|wsgkk
+European Golden Plover|Pluvialis apricaria|hhvkk
+Spur-winged Lapwing|Vanellus spinosus|wttkk|Kk
+Northern Lapwing|Vanellus vanellus|wffwk|CKk
+Masked Lapwing|Vanellus miles|ktnwy
+Spotted Sandpiper|Actitis macularius|nnnwo|S
+Common Sandpiper|Actitis hypoleucos|nnnwd
+Solitary Sandpiper|Tringa solitaria|ddmwd
+Greater Yellowlegs|Tringa melanoleuca|ggdwd
+Lesser Yellowlegs|Tringa flavipes|ggnwk
+Common Redshank|Tringa totanus|nnncr
+Common Greenshank|Tringa nebularia|ggdwd
+Green Sandpiper|Tringa ochropus|dmmwd
+Wood Sandpiper|Tringa glareola|nnmwd
+Willet|Tringa semipalmata|gggsd
+Sanderling|Calidris alba|ssdwk
+Dunlin|Calidris alpina|nnnwk
+Least Sandpiper|Calidris minutilla|nnnwk
+Western Sandpiper|Calidris mauri|tnnwk
+Semipalmated Sandpiper|Calidris pusilla|ttnwk
+Ruddy Turnstone|Arenaria interpres|wxxwk|Bk
+Black-winged Stilt|Himantopus himantopus|wwkwk
+Black-necked Stilt|Himantopus mexicanus|kkkwk
+Eurasian Oystercatcher|Haematopus ostralegus|kkkwo
+Common Snipe|Gallinago gallinago|tnmct|S
+Wilson's Snipe|Gallinago delicata|tnmct|S
+American Woodcock|Scolopax minor|ttnzt
+=curlew
+Long-billed Curlew|Numenius americanus|ttnzm
+Eurasian Curlew|Numenius arquata|tnncm|S
+Whimbrel|Numenius phaeopus|nnncd
+=gull
+European Herring Gull|Larus argentatus|wsswy
+American Herring Gull|Larus smithsonianus|wsswy
+Black-headed Gull|Chroicocephalus ridibundus|msswr
+Laughing Gull|Leucophaeus atricilla|kddwx
+Franklin's Gull|Leucophaeus pipixcan|kddwr
+Bonaparte's Gull|Chroicocephalus philadelphia|ksswk
+California Gull|Larus californicus|wggwy
+Western Gull|Larus occidentalis|wddwy
+Glaucous-winged Gull|Larus glaucescens|wggwy
+Great Black-backed Gull|Larus marinus|wkkwy
+Lesser Black-backed Gull|Larus fuscus|wddwy
+Common Gull|Larus canus|wgswv
+Silver Gull|Chroicocephalus novaehollandiae|wsswr
+Common Tern|Sterna hirundo|wsswr|KkF
+Forster's Tern|Sterna forsteri|wsswo|KkF
+Caspian Tern|Hydroprogne caspia|wsswr|Kk
+Royal Tern|Thalasseus maximus|wsswo|Kk
+Black Tern|Chlidonias niger|kddkk|F
+Whiskered Tern|Chlidonias hybrida|wssdr|Kk
+=dove
+Eurasian Collared Dove|Streptopelia decaocto|ccttk
+Wood Pigeon|Columba palumbus|jjgqo
+Stock Dove|Columba oenas|jjjgy
+European Turtle Dove|Streptopelia turtur|jtzqd|S
+Spotted Dove|Spilopelia chinensis|snmqk|S
+Laughing Dove|Spilopelia senegalensis|qxjtk
+White-winged Dove|Zenaida asiatica|ttmtk|W
+Common Ground Dove|Columbina passerina|stnqq
+Inca Dove|Columbina inca|ssntk
+Zebra Dove|Geopelia striata|stnsj
+Red-eyed Dove|Streptopelia semitorquata|qnmqk
+Ring-necked Dove|Streptopelia capicola|sggsk
+Crested Pigeon|Ocyphaps lophotes|ssvsk|C
+=fowl
+Wild Turkey|Meleagris gallopavo|inxms
+Ring-necked Pheasant|Phasianus colchicus|fznxc|Er
+Northern Bobwhite|Colinus virginianus|mnnck|Bw
+California Quail|Callipepla californica|mjjtk|CBk
+Gambel's Quail|Callipepla gambelii|zggck|CBk
+Common Quail|Coturnix coturnix|nttck
+Grey Partridge|Perdix perdix|ogncs
+Red-legged Partridge|Alectoris rufa|stncr|Bw
+Chukar|Alectoris chukar|ggtcr|Bc
+Red Junglefowl|Gallus gallus|hzfkh|C
+Helmeted Guineafowl|Numida meleagris|idddr|S
+Ruffed Grouse|Bonasa umbellus|nnmck|CS
+Willow Ptarmigan|Lagopus lagopus|xxwwk
+=hawk
+Red-tailed Hawk|Buteo jamaicensis|nmmch
+Red-shouldered Hawk|Buteo lineatus|nnmzh
+Broad-winged Hawk|Buteo platypterus|mmmch
+Common Buzzard|Buteo buteo|nnmch
+Cooper's Hawk|Astur cooperii|djjzh|Kd
+Sharp-shinned Hawk|Accipiter striatus|jjjzh
+Eurasian Sparrowhawk|Accipiter nisus|jjjch
+Northern Harrier|Circus hudsonius|gggwh
+Western Marsh Harrier|Circus aeruginosus|cmnzh
+Black Kite|Milvus migrans|tnmnh
+Red Kite|Milvus milvus|szmzh
+Osprey|Pandion haliaetus|wmmwd|Mk
+=vulture
+Turkey Vulture|Cathartes aura|rmkmc
+Black Vulture|Coragyps atratus|dkkks
+Hooded Vulture|Necrosyrtes monachus|qmmmd
+=falcon
+American Kestrel|Falco sparverius|jzjch|Mk
+Common Kestrel|Falco tinnunculus|jzmch|S
+Merlin|Falco columbarius|jjdch
+Eurasian Hobby|Falco subbuteo|kddch
+=owl
+Little Owl|Athene noctua|nncch|S
+Tawny Owl|Strix aluco|nnmck
+Eastern Screech Owl|Megascops asio|zzncv|S
+Spotted Owlet|Athene brama|mmmch|S
+=earowl
+Great Horned Owl|Bubo virginianus|nnmth|S
+Long-eared Owl|Asio otus|tnmtk|S
+=hummer
+Anna's Hummingbird|Calypte anna|qefsk
+Black-chinned Hummingbird|Archilochus alexandri|ffdsk|Bk
+Rufous Hummingbird|Selasphorus rufus|zzmck|Bo
+=swift
+Chimney Swift|Chaetura pelagica|mmdgk
+Common Swift|Apus apus|mmkmk|Bc
+Little Swift|Apus affinis|kkkkk|Bw
+Tree Swallow|Tachycineta bicolor|bbkwk
+Violet-green Swallow|Tachycineta thalassina|fepwk
+Cliff Swallow|Petrochelidon pyrrhonota|uumcd|Kw
+Cave Swallow|Petrochelidon fulva|uummd|Bz
+Northern Rough-winged Swallow|Stelgidopteryx serripennis|nnmsk
+Bank Swallow|Riparia riparia|nnmwk
+Purple Martin|Progne subis|ppukk
+Western House Martin|Delichon urbicum|uukwk
+Red-rumped Swallow|Cecropis daurica|uzucd|Kz
+Wire-tailed Swallow|Hirundo smithii|uuuwk|Kz
+Welcome Swallow|Hirundo neoxena|uuusk|Bz
+=pecker
+Downy Woodpecker|Dryobates pubescens|kwkwd|Kr
+Hairy Woodpecker|Leuconotopicus villosus|kwkwd|Ew
+Red-bellied Woodpecker|Melanerpes carolinus|rskcd|WKr
+Northern Flicker|Colaptes auratus|ttncd|SBc
+Yellow-bellied Sapsucker|Sphyrapicus varius|wkkyd|KrW
+Acorn Woodpecker|Melanerpes formicivorus|wkkwd|KrBk
+Great Spotted Woodpecker|Dendrocopos major|wkkck|KrW
+European Green Woodpecker|Picus viridis|evvld|KrMk
+Golden-fronted Woodpecker|Melanerpes aurifrons|sskcd|WKh
+Ladder-backed Woodpecker|Dryobates scalaris|wkkck|WKr
+=kfisher
+Common Kingfisher|Alcedo atthis|babok|Bw
+White-throated Kingfisher|Halcyon smyrnensis|xaaxr|Bw
+Pied Kingfisher|Ceryle rudis|kkkwk|CEw
+Woodland Kingfisher|Halcyon senegalensis|ibksr
+Collared Kingfisher|Todiramphus chloris|aaawd
+=cuckoo
+Common Cuckoo|Cuculus canorus|jjdsy
+Yellow-billed Cuckoo|Coccyzus americanus|nnnwh
+Greater Roadrunner|Geococcyx californianus|mnmcd|CS
+Smooth-billed Ani|Crotophaga ani|kkkkk
+Asian Koel|Eudynamys scolopaceus|kkkks
+=crow
+Common Raven|Corvus corax|kkkkk
+Fish Crow|Corvus ossifragus|kkukk
+Carrion Crow|Corvus corone|kkkkd
+Hooded Crow|Corvus cornix|kgkgk|Bk
+Rook|Corvus frugilegus|kkpks
+Western Jackdaw|Coloeus monedula|gdkdk|Kk
+House Crow|Corvus splendens|gkkdk|Kk
+Pied Crow|Corvus albus|kkkwk
+Black-billed Magpie|Pica hudsonia|kkuwk
+Eurasian Magpie|Pica pica|kkuwk|L
+=songbird
+Australian Magpie|Gymnorhina tibicen|kwkks
+=jay
+Steller's Jay|Cyanocitta stelleri|kubuk|C
+California Scrub Jay|Aphelocoma californica|bnbsk|L
+Eurasian Jay|Garrulus glandarius|ttktd|Bw
+=songbird
+Tufted Titmouse|Baeolophus bicolor|gggwk|C
+Carolina Chickadee|Poecile carolinensis|wggck|KkBk
+Mountain Chickadee|Poecile gambeli|wggsk|KkBkEw
+Great Tit|Parus major|kvjyk|Ew
+Eurasian Blue Tit|Cyanistes caeruleus|wvbyk|Kb
+Coal Tit|Periparus ater|kggtk|Ew
+Long-tailed Tit|Aegithalos caudatus|wqkwk|L
+Bushtit|Psaltriparus minimus|nggsk|L
+White-breasted Nuthatch|Sitta carolinensis|wjjwd|Kk
+Red-breasted Nuthatch|Sitta canadensis|wjjzd|KkMk
+Eurasian Nuthatch|Sitta europaea|jjjhd|Mk
+Brown Creeper|Certhia americana|nnmwd|S
+Eurasian Treecreeper|Certhia familiaris|nnmwd|S
+Carolina Wren|Thryothorus ludovicianus|zzzhd|W
+House Wren|Troglodytes aedon|nnmtd
+Eurasian Wren|Troglodytes troglodytes|nnmtd|W
+Bewick's Wren|Thryomanes bewickii|nnmsd|L
+Marsh Wren|Cistothorus palustris|mnntd|W
+Golden-crowned Kinglet|Regulus satrapa|wvdsk|KhW
+Ruby-crowned Kinglet|Corthylio calendula|vvdtk|W
+Goldcrest|Regulus regulus|vvdtk|KyW
+Blue-gray Gnatcatcher|Polioptila caerulea|jjkwk|L
+Western Bluebird|Sialia mexicana|bbuzk|Bb
+Mountain Bluebird|Sialia currucoides|iibik
+Hermit Thrush|Catharus guttatus|nnnwd|S
+Wood Thrush|Hylocichla mustelina|znnwq|S
+Swainson's Thrush|Catharus ustulatus|vvvcd|S
+Eurasian Blackbird|Turdus merula|kkkko
+Song Thrush|Turdus philomelos|nnncn|S
+Mistle Thrush|Turdus viscivorus|ggncd|S
+Redwing Thrush|Turdus iliacus|mmmwd|SEc
+Fieldfare|Turdus pilaris|jmmcy|S
+Clay-colored Thrush|Turdus grayi|nnmtv
+Rufous-bellied Thrush|Turdus rufiventris|nnnoy
+European Robin|Erithacus rubecula|nnnsd|Bo
+Common Nightingale|Luscinia megarhynchos|nnxcd
+Common Redstart|Phoenicurus phoenicurus|jjmok|BkKw
+Black Redstart|Phoenicurus ochruros|kddsk
+European Stonechat|Saxicola rubicola|kmmok|Ew
+Northern Wheatear|Oenanthe oenanthe|sgkck|Mk
+Oriental Magpie-Robin|Copsychus saularis|kkkwk|WL
+Spotted Flycatcher|Muscicapa striata|nnmwk|S
+European Pied Flycatcher|Ficedula hypoleuca|kkkwk|W
+Gray Catbird|Dumetella carolinensis|gggsk|KkL
+Northern Mockingbird|Mimus polyglottos|ggdwk|LW
+Brown Thrasher|Toxostoma rufum|zzzcd|LSW
+Curve-billed Thrasher|Toxostoma curvirostre|nnmtk|LS
+Common Myna|Acridotheres tristis|knmny|Eh
+Superb Starling|Lamprotornis superbus|kafzk
+White Wagtail|Motacilla alba|wgkwk|LKkBk
+Grey Wagtail|Motacilla cinerea|jjkyk|L
+Western Yellow Wagtail|Motacilla flava|jvmyk|L
+Meadow Pipit|Anthus pratensis|nnmcn|S
+American Pipit|Anthus rubescens|gnmtk|S
+Phainopepla|Phainopepla nitens|kkdkk|CL
+Orange-crowned Warbler|Leiothlypis celata|vvvld
+Yellow Warbler|Setophaga petechia|yhvyd
+Yellow-rumped Warbler|Setophaga coronata|jjkwk|WKy
+Common Yellowthroat|Geothlypis trichas|vvvyk|Mk
+Black-and-white Warbler|Mniotilta varia|kwkwk|WSKk
+American Redstart|Setophaga ruticilla|kkkwk|W
+Ovenbird|Seiurus aurocapilla|vvvwq|SKo
+Palm Warbler|Setophaga palmarum|nvmyk|Kx
+Pine Warbler|Setophaga pinus|vvdyd|W
+Chestnut-sided Warbler|Setophaga pensylvanica|wvkwk|WKyMk
+Wilson's Warbler|Cardellina pusilla|yvvyd|Kk
+Northern Parula|Setophaga americana|jjkyh|W
+Common Chiffchaff|Phylloscopus collybita|vvvck
+Willow Warbler|Phylloscopus trochilus|vvvld
+Eurasian Blackcap|Sylvia atricapilla|gggsd|Kk
+Garden Warbler|Sylvia borin|nnntd
+Common Whitethroat|Curruca communis|gnzcn|Bw
+Eurasian Reed Warbler|Acrocephalus scirpaceus|nnmcn
+Common Tailorbird|Orthotomus sutorius|vevwn|KzL
+Red-vented Bulbul|Pycnonotus cafer|kmmnk|C
+Red-whiskered Bulbul|Pycnonotus jocosus|knmwk|CEr
+Dark-capped Bulbul|Pycnonotus tricolor|knnck|C
+Warbling White-eye|Zosterops japonicus|vvvck|Ew
+Eastern Phoebe|Sayornis phoebe|mddck
+Black Phoebe|Sayornis nigricans|kkkwk
+Say's Phoebe|Sayornis saya|ggdzk
+Eastern Wood Pewee|Contopus virens|dvdck|W
+Western Kingbird|Tyrannus verticalis|sgkyk
+Eastern Kingbird|Tyrannus tyrannus|kkkwk
+Great Crested Flycatcher|Myiarchus crinitus|vvzyd|CBg
+Great Kiskadee|Pitangus sulphuratus|knzyk|Kw
+Willie Wagtail|Rhipidura leucophrys|kkkwk|L
+Loggerhead Shrike|Lanius ludysseus|ggkwk|Mk
+Red-backed Shrike|Lanius collurio|jxmqk|Mk
+Warbling Vireo|Vireo gilvus|gvvcs
+Red-eyed Vireo|Vireo olivaceus|jvvwd|Mk
+Fork-tailed Drongo|Dicrurus adsimilis|kkkkk|F
+Black Drongo|Dicrurus macrocercus|kkukk|F
+Horned Lark|Eremophila alpestris|ytncd|MkBy
+Eurasian Skylark|Alauda arvensis|nnmcn|CS
+Crested Lark|Galerida cristata|tttct|CS
+=sunbird
+Purple Sunbird|Cinnyris asiaticus|ppkuk
+Olive-backed Sunbird|Cinnyris jugularis|vvvyk|Bu
+=finch
+Eurasian Tree Sparrow|Passer montanus|xnmsk|EwBk
+Spanish Sparrow|Passer hispaniolensis|xnmwk|BkEw
+Cape Sparrow|Passer melanurus|knnwk
+Chipping Sparrow|Spizella passerina|snmsk|KxW
+Field Sparrow|Spizella pusilla|gnmcq|KzW
+American Tree Sparrow|Spizelloides arborea|gnmsh|KzW
+Song Sparrow|Melospiza melodia|nnmcd|S
+Swamp Sparrow|Melospiza georgiana|gnxsd|Kx
+Lincoln's Sparrow|Melospiza lincolnii|gnmcd|SKn
+Savannah Sparrow|Passerculus sandwichensis|nnmwq|S
+White-throated Sparrow|Zonotrichia albicollis|knmsd|KwBwW
+White-crowned Sparrow|Zonotrichia leucocephala|snmso|KwW
+Golden-crowned Sparrow|Zonotrichia atricapilla|knmsd|KyW
+Fox Sparrow|Passerella iliaca|jzzwd|S
+Vesper Sparrow|Pooecetes gramineus|nnmwq|S
+Lark Sparrow|Chondestes grammacus|xnmws|EwKx
+Spotted Towhee|Pipilo maculatus|kkkzk|SBk
+Eastern Towhee|Pipilo erythrophthalmus|kkkzk|Bk
+California Towhee|Melozone crissalis|nnmtt|L
+Eurasian Chaffinch|Fringilla coelebs|jxkqs|W
+Brambling|Fringilla montifringilla|kkkow|W
+European Goldfinch|Carduelis carduelis|wnkwc|KrMk
+European Greenfinch|Chloris chloris|vvdlq
+Eurasian Siskin|Spinus spinus|vvkyd|KkW
+Pine Siskin|Spinus pinus|nnmsd|SW
+Lesser Goldfinch|Spinus psaltria|kvkys|WKk
+Purple Finch|Haemorhous purpureus|xxmqn
+Common Linnet|Linaria cannabina|gxmtd
+Eurasian Bullfinch|Pyrrhula pyrrhula|kjkqk|KkW
+Yellowhammer|Emberiza citrinella|ynmys|S
+Reed Bunting|Emberiza schoeniclus|knmwk|Bk
+Corn Bunting|Emberiza calandra|nnmcn|S
+Atlantic Canary|Serinus canaria|vvvlt
+European Serin|Serinus serinus|vvmyd|SW
+Yellow-fronted Canary|Crithagra mozambica|yvmys|Mk
+Common Waxbill|Estrilda astrild|nnmtr|Mr
+Zebra Finch|Taeniopygia guttata|gnncr|Eo
+Scaly-breasted Munia|Lonchura punctulata|xnmwd|S
+Village Weaver|Ploceus cucullatus|kyvyk
+Baya Weaver|Ploceus philippinus|ynmcd|Mk
+Red-billed Quelea|Quelea quelea|tnmcr|Mk
+Rose-breasted Grosbeak|Pheucticus ludovicianus|kkkwc|WBr
+Black-headed Grosbeak|Pheucticus melanocephalus|kkkog|W
+Indigo Bunting|Passerina cyanea|ububs
+Blue Grosbeak|Passerina caerulea|bbubd|W
+Dickcissel|Spiza americana|gnxys|Bk
+Saffron Finch|Sicalis flaveola|oyvyt
+Silver-beaked Tanager|Ramphocelus carbo|xxkxs
+Blue-gray Tanager|Thraupis episcopus|iibid
+Bananaquit|Coereba flaveola|kddyk|Kk
+Common Grackle|Quiscalus quiscula|upmks|Ey
+Great-tailed Grackle|Quiscalus mexicanus|uukkk|LEy
+Boat-tailed Grackle|Quiscalus major|uukkk|L
+Brown-headed Cowbird|Molothrus ater|mkkkd
+Brewer's Blackbird|Euphagus cyanocephalus|pkfkk|Ey
+Rusty Blackbird|Euphagus carolinus|mxmnk|Ey
+Eastern Meadowlark|Sturnella magna|nnmyg|SBy
+Western Meadowlark|Sturnella neglecta|tnnyg|SBy
+Orchard Oriole|Icterus spurius|kkkxs|WBk
+Bobolink|Dolichonyx oryzivorus|kkkkk|WKc
+=parrot
+Rose-ringed Parakeet|Psittacula krameri|eelle|L
+Monk Parakeet|Myiopsitta monachus|seust|L
+Budgerigar|Melopsittacus undulatus|yllls|LS
+=cockatoo
+Galah|Eolophus roseicapilla|qggqc
+Sulphur-crested Cockatoo|Cacatua galerita|wwwwk
+</script>
+<script type="text/plain" data-tier="rare">
+=duck
+Wood Duck|Aix sponsa|fmuxr|CBw
+Harlequin Duck|Histrionicus histrionicus|ujkxs|Ew
+Barrow's Goldeneye|Bucephala islandica|pkkwk|Ew
+Black Scoter|Melanitta americana|kkkkh
+King Eider|Somateria spectabilis|iwkko
+Red-crested Pochard|Netta rufina|onkwr|C
+Garganey|Spatula querquedula|xnsts|Ew
+Ferruginous Duck|Aythya nyroca|xxmxd
+Ruddy Shelduck|Tadorna ferruginea|czkzk
+Black-bellied Whistling Duck|Dendrocygna autumnalis|gxkkr
+Fulvous Whistling Duck|Dendrocygna bicolor|hmmhd
+Paradise Shelduck|Tadorna variegata|wxkxk
+Chiloe Wigeon|Mareca sibilatrix|fkswj
+Bronze-winged Duck|Speculanas specularis|mmfcy|Ew
+Rosy-billed Pochard|Netta peposaca|kkksr
+=goose
+Bar-headed Goose|Anser indicus|wsgsy|Kw
+Emperor Goose|Anser canagicus|wggsq|Bk
+Ross's Goose|Anser rossii|wwkwq
+=swan
+Trumpeter Swan|Cygnus buccinator|wwwwk
+Whooper Swan|Cygnus cygnus|wwwwy
+Black-necked Swan|Cygnus melancoryphus|kwwwr
+=pelican
+Brown Pelican|Pelecanus occidentalis|wddms
+Great White Pelican|Pelecanus onocrotalus|wwkwy
+Pink-backed Pelican|Pelecanus rufescens|ssgsq
+=cormorant
+Anhinga|Anhinga anhinga|kkskh
+African Darter|Anhinga rufa|xkmkv
+European Shag|Gulosus aristotelis|kfkfh|C
+Pied Cormorant|Phalacrocorax varius|wkkwt
+=heron
+Goliath Heron|Ardea goliath|xjjxd
+Yellow-crowned Night Heron|Nyctanassa violacea|kjjsk|Ey
+Reddish Egret|Egretta rufescens|zjjjq
+Eurasian Bittern|Botaurus stellaris|hhnch
+Least Bittern|Botaurus exilis|knmtg
+Whistling Heron|Syrigma sibilatrix|jsccq
+=stork
+White Stork|Ciconia ciconia|wwkwr
+Black Stork|Ciconia nigra|kkkwr
+Wood Stork|Mycteria americana|dwkwd
+Marabou Stork|Leptoptilos crumenifer|qddwt
+Painted Stork|Mycteria leucocephala|owkwy
+Asian Openbill|Anastomus oscitans|ssksv
+Woolly-necked Stork|Ciconia episcopus|wkukd|Kk
+=crane
+Common Crane|Grus grus|kggst|Kr
+Demoiselle Crane|Grus virgo|kssso|Ew
+Brolga|Antigone rubicunda|rggsv
+=ibis
+Scarlet Ibis|Eudocimus ruber|rrrrq
+Straw-necked Ibis|Threskiornis spinicollis|kkfwk
+Buff-necked Ibis|Theristicus caudatus|hggkd
+=spoonbill
+African Spoonbill|Platalea alba|wwwwr
+Royal Spoonbill|Platalea regia|wwwwk|C
+=seabird
+Northern Gannet|Morus bassanus|cwkws
+Masked Booby|Sula dactylatra|wwkwy|Mk
+Northern Fulmar|Fulmarus glacialis|wggwy
+Great Shearwater|Ardenna gravis|nddwk|Kk
+Sooty Shearwater|Ardenna grisea|dmdgk
+Cory's Shearwater|Calonectris borealis|nnmwy
+Wilson's Storm Petrel|Oceanites oceanicus|kkmkk
+Pomarine Jaeger|Stercorarius pomarinus|cmmct|Kk
+Great Skua|Stercorarius skua|nnmnk|S
+Black-legged Kittiwake|Rissa tridactyla|wsswy
+Sabine's Gull|Xema sabini|dsswk|F
+Arctic Tern|Sterna paradisaea|wsswr|KkF
+Sandwich Tern|Thalasseus sandvicensis|wsswk|KkF
+Little Tern|Sternula albifrons|wsswy|KkF
+Brown Noddy|Anous stolidus|smmmk
+Cape Petrel|Daption capense|kwkwk|S
+=auk
+Common Murre|Uria aalge|mmmwk
+Razorbill|Alca torda|kkkwk
+Pigeon Guillemot|Cepphus columba|kkwkk|W
+Dovekie|Alle alle|kkkwk
+=penguin
+African Penguin|Spheniscus demersus|kdkwk|Ew
+Gentoo Penguin|Pygoscelis papua|kkkwo|Ew
+Adelie Penguin|Pygoscelis adeliae|kkkwx
+Little Penguin|Eudyptula minor|jjuwd
+=shore
+Pied Avocet|Recurvirostra avosetta|wwkwk|Kk
+American Oystercatcher|Haematopus palliatus|kmmwr
+Black Oystercatcher|Haematopus bachmani|kkkkr
+Piping Plover|Charadrius melodus|ssswo
+Eurasian Dotterel|Charadrius morinellus|mnnzk|Ew
+Kentish Plover|Charadrius alexandrinus|tttwk
+Pacific Golden Plover|Pluvialis fulva|hhhkk
+Black-tailed Godwit|Limosa limosa|znnco
+Bar-tailed Godwit|Limosa lapponica|znnzk
+Red Knot|Calidris canutus|zgnzk
+Pectoral Sandpiper|Calidris melanotos|nnmwv|S
+Purple Sandpiper|Calidris maritima|ddmso
+Surfbird|Calidris virgata|ggdsh|S
+Red-necked Phalarope|Phalaropus lobatus|jjnwk|Bz
+Wilson's Phalarope|Phalaropus tricolor|sgxwk
+Red Phalarope|Phalaropus fulicarius|kmmzy|Ew
+African Jacana|Actophilornis africanus|kzzzj|Bw
+Comb-crested Jacana|Irediparra gallinacea|ynkwr
+Crowned Lapwing|Vanellus coronatus|knnwr|Kk
+Southern Lapwing|Vanellus chilensis|ggnwq|CBk
+Eurasian Stone-curlew|Burhinus oedicnemus|tnmck|S
+=rail
+Limpkin|Aramus guarauna|mmmmh|S
+King Rail|Rallus elegans|nnnzo
+Black Crake|Zapornia flavirostra|kkkky
+Purple Gallinule|Porphyrio martinica|ueeur
+Buff-banded Rail|Hypotaenidia philippensis|xnmsq|Ew
+=grebe
+Clark's Grebe|Aechmophorus clarkii|kggwo
+Red-necked Grebe|Podiceps grisegena|kddxy|Ew
+Common Loon|Gavia immer|kkkwk|S
+Pacific Loon|Gavia pacifica|skkwk
+=fowl
+Greater Sage-Grouse|Centrocercus urophasianus|nnmwk|CBk
+Sharp-tailed Grouse|Tympanuchus phasianellus|nnmck|S
+Greater Prairie Chicken|Tympanuchus cupido|ttmcd|CEo
+Western Capercaillie|Tetrao urogallus|dmmkc|Er
+Spruce Grouse|Canachites canadensis|dddkk|SEr
+Dusky Grouse|Dendragapus obscurus|jjdgk|Eo
+Hazel Grouse|Tetrastes bonasia|nggsk|CS
+Mountain Quail|Oreortyx pictus|jnnxk|CBx
+Scaled Quail|Callipepla squamata|tjnsk|CS
+Kalij Pheasant|Lophura leucomelanos|kkkdc|CEr
+Green Pheasant|Phasianus versicolor|fffur|Er
+Silver Pheasant|Lophura nycthemera|rwwky|CKk
+Black Francolin|Francolinus francolinus|knnkk|Ew
+Australian Brushturkey|Alectura lathami|rkkky|By
+=hawk
+Northern Goshawk|Astur atricapillus|kjjsd|Mw
+Ferruginous Hawk|Buteo regalis|szzwh
+Rough-legged Buzzard|Buteo lagopus|cnmcd|S
+Harris's Hawk|Parabuteo unicinctus|mmxmh
+Zone-tailed Hawk|Buteo albonotatus|kkkkh
+Mississippi Kite|Ictinia mississippiensis|sjdsd
+White-tailed Kite|Elanus leucurus|wsdwk|F
+Hen Harrier|Circus cyaneus|ssswh
+European Honey Buzzard|Pernis apivorus|jnmch|S
+Brahminy Kite|Haliastur indus|wxxws
+Whistling Kite|Haliastur sphenurus|tnmcj
+=eagle
+White-tailed Eagle|Haliaeetus albicilla|tnnny
+African Fish Eagle|Icthyophaga vocifer|wkkxy
+Booted Eagle|Hieraaetus pennatus|nmmwd
+Short-toed Snake Eagle|Circaetus gallicus|nnmws|S
+=vulture
+Griffon Vulture|Gyps fulvus|wtmts
+White-backed Vulture|Gyps africanus|dtmtk
+Lappet-faced Vulture|Torgos tracheliotos|qmmwt
+=falcon
+Prairie Falcon|Falco mexicanus|nnnch|Mm
+Crested Caracara|Caracara plancus|wkkco|Kk
+Yellow-headed Caracara|Milvago chimachima|cmmcs
+Lanner Falcon|Falco biarmicus|zjjch
+Red-footed Falcon|Falco vespertinus|jjjjo
+Aplomado Falcon|Falco femoralis|jjjzh|Mk
+=owl
+Barred Owl|Strix varia|nnmck|S
+Ural Owl|Strix uralensis|sggwh|S
+Burrowing Owl|Athene cunicularia|nnncv|S
+Northern Saw-whet Owl|Aegolius acadicus|nnmwk|S
+Northern Hawk Owl|Surnia ulula|wmmwv|S
+Northern Pygmy Owl|Glaucidium gnoma|nnmwv|S
+Ferruginous Pygmy Owl|Glaucidium brasilianum|zzncv|S
+=earowl
+Short-eared Owl|Asio flammeus|tnmck|S
+Western Screech Owl|Megascops kennicottii|ggdsk|S
+Eurasian Scops Owl|Otus scops|nnmtd|S
+Spotted Eagle-Owl|Bubo africanus|gdmsd|S
+Collared Scops Owl|Otus lettia|tnmcv
+=barnowl
+Australasian Grass Owl|Tyto longimembris|wmmcc
+=nightjar
+Common Nighthawk|Chordeiles minor|dmmsk|SBw
+Common Poorwill|Phalaenoptilus nuttallii|ggmgk|SBw
+Eastern Whip-poor-will|Antrostomus vociferus|nnmmk|S
+Chuck-will's-widow|Antrostomus carolinensis|zzmnk|S
+Tawny Frogmouth|Podargus strigoides|ggdsd|S
+Common Pauraque|Nyctidromus albicollis|nnmtk|SBw
+=hummer
+Broad-tailed Hummingbird|Selasphorus platycercus|eefwk|Br
+Allen's Hummingbird|Selasphorus sasin|ezmok|Bo
+Costa's Hummingbird|Calypte costae|peesk|Bp
+Broad-billed Hummingbird|Cynanthus latirostris|aefar
+Rufous-tailed Hummingbird|Amazilia tzacatl|eexsr
+Violet Sabrewing|Campylopterus hemileucurus|ppfpk
+White-necked Jacobin|Florisuga mellivora|uefwk
+Fork-tailed Woodnymph|Thalurania furcata|keepk|F
+=swift
+White-throated Swift|Aeronautes saxatalis|kkkwk
+Alpine Swift|Tachymarptis melba|nnmwk
+Vaux's Swift|Chaetura vauxi|mmdsk
+Lesser Striped Swallow|Cecropis abyssinica|zuuwk
+Mangrove Swallow|Tachycineta albilinea|ffkwk
+=kfisher
+Laughing Kookaburra|Dacelo novaeguineae|wmmct|Mm
+Ringed Kingfisher|Megaceryle torquata|jjjzd|CBw
+Green Kingfisher|Chloroceryle americana|fffwk|SBw
+Amazon Kingfisher|Chloroceryle amazona|fffwk|Bw
+Stork-billed Kingfisher|Pelargopsis capensis|naaor
+Forest Kingfisher|Todiramphus macleayii|uubwk|Mk
+African Pygmy Kingfisher|Ispidina picta|ouuor|Ku
+=beeeater
+Green Bee-eater|Merops orientalis|heelk|Mk
+Little Bee-eater|Merops pusillus|eeehk|ByMk
+White-fronted Bee-eater|Merops bullockoides|weehk|Br
+Blue-tailed Bee-eater|Merops philippinus|eebhk|Mk
+=roller
+European Roller|Coracias garrulus|izbik
+Lilac-breasted Roller|Coracias caudatus|enbpk|Bp
+Indian Roller|Coracias benghalensis|bnuik
+=forest
+Amazon Motmot|Momotus momota|aeevk|LMkKb
+Broad-billed Motmot|Electron platyrhynchum|zeezk|L
+Rufous-tailed Jacamar|Galbula ruficauda|eeezk|Bw
+=trogon
+Black-headed Trogon|Trogon melanocephalus|kekyj
+Gartered Trogon|Trogon caligatus|ueuyj
+Narina Trogon|Apaloderma narina|eedry
+=pecker
+Lewis's Woodpecker|Melanerpes lewis|xfkqd
+Gila Woodpecker|Melanerpes uropygialis|ttktk|WKr
+=songbird
+Buff-throated Woodcreeper|Xiphorhynchus guttatus|nznnt|S
+=pecker
+American Three-toed Woodpecker|Picoides dorsalis|kkkwd|KyW
+Black Woodpecker|Dryocopus martius|kkkkc|Kr
+Grey-headed Woodpecker|Picus canus|gvvsd|Kr
+Lesser Spotted Woodpecker|Dryobates minor|wkkwd|KrW
+Eurasian Wryneck|Jynx torquilla|gnncn|S
+Lineated Woodpecker|Dryocopus lineatus|kkkcs|CKrEw
+Campo Flicker|Colaptes campestris|ytnyk|KkW
+Golden-tailed Woodpecker|Campethera abingoni|wvvck|KrS
+=cuckoo
+Black-billed Cuckoo|Coccyzus erythropthalmus|nnnwk
+Squirrel Cuckoo|Piaya cayana|zzzsl
+Guira Cuckoo|Guira guira|zmmco|CS
+Great Spotted Cuckoo|Clamator glandarius|gddck|CSL
+Channel-billed Cuckoo|Scythrops novaehollandiae|sggsc|L
+=dove
+Band-tailed Pigeon|Patagioenas fasciata|jjjqy
+Common Emerald Dove|Chalcophaps indica|jeexr
+Namaqua Dove|Oena capensis|snnwy|LBk
+Peaceful Dove|Geopelia placida|jnnsj
+Key West Quail-Dove|Geotrygon chrysia|xxzsr|Ew
+African Green Pigeon|Treron calvus|lvvlr
+Yellow-footed Green Pigeon|Treron phoenicopterus|gvglq
+=crow
+Northern Nutcracker|Nucifraga caryocatactes|mmkmk|S
+Red-billed Chough|Pyrrhocorax pyrrhocorax|kkkkr
+Alpine Chough|Pyrrhocorax graculus|kkkky
+Yellow-billed Magpie|Pica nuttalli|kkuwy|L
+White-necked Raven|Corvus albicollis|kkkkd
+=jay
+Canada Jay|Perisoreus canadensis|wddsk
+Pinyon Jay|Gymnorhinus cyanocephalus|bjjjk
+Brown Jay|Psilorhinus morio|mmmcy|L
+Plush-crested Jay|Cyanocorax chrysops|kuuck|C
+Azure-winged Magpie|Cyanopica cyanus|ksisk|LKk
+Rufous Treepie|Dendrocitta vagabunda|knszk|L
+=songbird
+Summer Tanager|Piranga rubra|rrxrc
+Scarlet Tanager|Piranga olivacea|rrkrc
+Hepatic Tanager|Piranga flava|rxxod
+Bohemian Waxwing|Bombycilla garrulus|tttgd|CMkW
+Blackburnian Warbler|Setophaga fusca|kkkod|WKk
+Black-throated Blue Warbler|Setophaga caerulescens|uuuwk|BkEk
+Black-throated Green Warbler|Setophaga virens|yvkwk|WBk
+Cerulean Warbler|Setophaga cerulea|bbkwk|W
+Prothonotary Warbler|Protonotaria citrea|yvjyk
+Canada Warbler|Cardellina canadensis|jjjyd|Mk
+Cape May Warbler|Setophaga tigrina|yvkyk|WSEz
+Bay-breasted Warbler|Setophaga castanea|kgkxk|WKx
+Hermit Warbler|Setophaga occidentalis|yjkwk|W
+Prairie Warbler|Setophaga discolor|yvvyk|SMk
+Yellow-breasted Chat|Icteria virens|jvvyk|Ew
+Bluethroat|Luscinia svecica|nnmck|Bb
+Siberian Rubythroat|Calliope calliope|nnmtk|BrEw
+Whinchat|Saxicola rubetra|mnmok|Ew
+Common Rock Thrush|Monticola saxatilis|jmmok
+Ring Ouzel|Turdus torquatus|kkdkh|Bw
+Varied Thrush|Ixoreus naevius|jjkok|MkW
+Townsend's Solitaire|Myadestes townsendi|gggsk|WL
+White-throated Dipper|Cinclus cinclus|mddmk|Bw
+American Dipper|Cinclus mexicanus|dddgk
+Wallcreeper|Tichodroma muraria|ggrdk
+Bearded Reedling|Panurus biarmicus|jhntg|LMk
+Eurasian Penduline Tit|Remiz pendulinus|sxntd|Mk
+Crested Tit|Lophophanes cristatus|wnntk|CBk
+Oak Titmouse|Baeolophus inornatus|gggsk|C
+Verdin|Auriparus flaviceps|yggsk
+Cactus Wren|Campylorhynchus brunneicapillus|mnmcd|SLEw
+Canyon Wren|Catherpes mexicanus|nzzzd|Bw
+Sage Thrasher|Oreoscoptes montanus|ggdck|S
+California Thrasher|Toxostoma redivivum|mmmtk|L
+Variegated Flycatcher|Empidonomus varius|knmsk|SKk
+Tropical Kingbird|Tyrannus melancholicus|gvdyk
+Cassin's Kingbird|Tyrannus vociferans|ggmyk|Bw
+Olive-sided Flycatcher|Contopus cooperi|ddmsd
+Cattle Tyrant|Machetornis theoretical|gnnyk
+Great Grey Shrike|Lanius excubitor|ggkwk|MkW
+Northern Shrike|Lanius borealis|ssksk|MkW
+Long-tailed Shrike|Lanius schach|gzkck|LMk
+Crimson-breasted Shrike|Laniarius atrococcineus|kkkrk|W
+Bokmakierie|Telophorus zeylonus|gvvyk|Bk
+Black-hooded Oriole|Oriolus xanthornus|kykyr|Bk
+African Paradise Flycatcher|Terpsiphone viridis|uzzjj|CL
+New Holland Honeyeater|Phylidonyris novaehollandiae|kkywk|SEw
+Noisy Miner|Manorina melanocephala|sggsy|Kk
+Silvereye|Zosterops lateralis|vgvsk|Ew
+Superb Fairywren|Malurus cyaneus|bukik|LMk
+Splendid Fairywren|Malurus splendens|ububk|LEi
+Hill Myna|Gracula religiosa|kkkko|Ey
+Rosy Starling|Pastor roseus|kqkqq|C
+Violet-backed Starling|Cinnyricinclus leucogaster|pppwk
+Red-billed Oxpecker|Buphagus erythrorynchus|nnmtr
+=sunbird
+Crimson Sunbird|Aethopyga siparaja|rxvgk
+Malachite Sunbird|Nectarinia famosa|eefek|L
+Collared Sunbird|Hedydipna collaris|eeeyk
+Scarlet-chested Sunbird|Chalcomitra senegalensis|kmmmk|Br
+Yellow-bellied Sunbird|Cinnyris venustus|upfyk
+=hoopoe
+Eurasian Hoopoe|Upupa epops|ttktd|CW
+=finch
+Pyrrhuloxia|Cardinalis sinuatus|ggrsy|CMr
+=songbird
+Vermilion Flycatcher|Pyrocephalus obscurus|rmmrk|CMm
+=finch
+Lazuli Bunting|Passerina amoena|bbmos|W
+Lark Bunting|Calamospiza melanocorys|kkkkj|W
+Snow Bunting|Plectrophenax nivalis|wkwwh
+Lapland Longspur|Calcarius lapponicus|kmmwy|Bk
+Cirl Bunting|Emberiza cirlus|knmys|SBk
+Black-throated Sparrow|Amphispiza bilineata|gggwk|BkEw
+Red Crossbill|Loxia curvirostra|rrmrd
+Pine Grosbeak|Pinicola enucleator|rrdgk|W
+Evening Grosbeak|Coccothraustes vespertinus|mhkhc|W
+Hawfinch|Coccothraustes coccothraustes|onkqj|Bk
+Cassin's Finch|Haemorhous cassinii|rnmsd|Kr
+Gray-crowned Rosy Finch|Leucosticte tephrocotis|gxqxk|Kk
+Common Rosefinch|Carpodacus erythrinus|rxmqd
+Northern Red Bishop|Euplectes franciscanus|konok|Mk
+Red-billed Firefinch|Lagonosticta senegala|rxnrr
+Blue Waxbill|Uraeginthus angolensis|inniq
+Java Sparrow|Padda oryzivora|kjkqr|Ew
+Red-crested Cardinal|Paroaria coronata|rgdws|CBr
+Yellow Cardinal|Gubernatrix cristata|kvvyd|CBk
+Rufous-collared Sparrow|Zonotrichia capensis|gnmsd|CBw
+Hooded Oriole|Icterus cucullatus|okkok|WBk
+Altamira Oriole|Icterus gularis|okkok|WMk
+Yellow-headed Blackbird|Xanthocephalus xanthocephalus|ykkkk|Mk
+Tricolored Blackbird|Agelaius tricolor|kkrkk|W
+=parrot
+Rainbow Lorikeet|Trichoglossus moluccanus|ueeor|L
+Eastern Rosella|Platycercus eximius|reuys|LEw
+Crimson Rosella|Platycercus elegans|rruri|LBb
+Red-rumped Parrot|Psephotus haematonotus|aeulk|L
+Rosy-faced Lovebird|Agapornis roseicollis|qeelc|Kr
+Fischer's Lovebird|Agapornis fischeri|oeelr
+Plum-headed Parakeet|Psittacula cyanocephala|peelc|L
+Orange-fronted Parakeet|Eupsittula canicularis|eebls|LKo
+Nanday Parakeet|Aratinga nenday|keuls|LBb
+Meyer's Parrot|Poicephalus meyeri|nnnad
+Cockatiel|Nymphicus hollandicus|yggss|CEo
+</script>
+<script type="text/plain" data-tier="epic">
+=duck
+Mandarin Duck|Aix galericulata|ozmwr|CEw
+Spectacled Eider|Somateria fischeri|lwkko|Ew
+Steller's Eider|Polysticta stelleri|wkwhj
+Baikal Teal|Sibirionetta formosa|cnnqd|KkEe
+=goose
+Red-breasted Goose|Branta ruficollis|kkkzk|Ez
+=swan
+Coscoroba Swan|Coscoroba coscoroba|wwwwr
+=pelican
+Dalmatian Pelican|Pelecanus crispus|ssgso|C
+Peruvian Pelican|Pelecanus thagus|ykdmo
+=flamingo
+Lesser Flamingo|Phoeniconaias minor|qqrqx
+Chilean Flamingo|Phoenicopterus chilensis|qqrqs
+=stork
+Saddle-billed Stork|Ephippiorhynchus senegalensis|kwkwr
+Jabiru|Jabiru mycteria|kwwwk
+Black-necked Stork|Ephippiorhynchus asiaticus|kwkwk
+=crane
+Black Crowned Crane|Balearica pavonina|wkwkk|CKk
+Sarus Crane|Antigone antigone|rggst
+=spoonbill
+Roseate Spoonbill|Platalea ajaja|sqrqv
+=heron
+Boat-billed Heron|Cochlearius cochlearius|wsszk|CKk
+Capped Heron|Pilherodius pileatus|ccwcb|Kk
+Agami Heron|Agamia agami|kfzxv
+=trumpet
+Grey-winged Trumpeter|Psophia crepitans|kksks
+Sunbittern|Eurypyga helias|knhco|Ew
+Red-legged Seriema|Cariama cristata|tnmcr|C
+=seabird
+Magnificent Frigatebird|Fregata magnificens|kkkks|F
+Great Frigatebird|Fregata minor|kkmks|F
+Red-footed Booby|Sula sula|cwkwi
+Laysan Albatross|Phoebastria immutabilis|wmmwt|Mk
+Black-footed Albatross|Phoebastria nigripes|dmmmd
+Black-browed Albatross|Thalassarche melanophris|wkkwo|Mk
+Red-billed Tropicbird|Phaethon aethereus|wwswr|LMk
+White-tailed Tropicbird|Phaethon lepturus|wwkwo|LMk
+Inca Tern|Larosterna inca|dddjr|Ew
+White Tern|Gygis alba|wwwwk
+=auk
+Tufted Puffin|Fratercula cirrhata|wkkko|Ew
+Horned Puffin|Fratercula corniculata|wkkwy
+Rhinoceros Auklet|Cerorhinca monocerata|ddkso|Ew
+=penguin
+King Penguin|Aptenodytes patagonicus|kjjwo|Eo
+Chinstrap Penguin|Pygoscelis antarcticus|kkkwk|Bw
+Macaroni Penguin|Eudyptes chrysolophus|kkkwz|Ey
+Southern Rockhopper Penguin|Eudyptes chrysocome|kkkwz|CEy
+Humboldt Penguin|Spheniscus humboldti|kdkwk|Ew
+=ratite
+Common Ostrich|Struthio camelus|qkwqt
+Greater Rhea|Rhea americana|ggdst
+=fowl
+Indian Peafowl|Pavo cristatus|ufnus|CTEw
+Golden Pheasant|Chrysolophus pictus|yzurh|CT
+Lady Amherst's Pheasant|Chrysolophus amherstiae|ufuwj|CT
+Reeves's Pheasant|Syrmaticus reevesii|whzzs|TMk
+Crested Guan|Penelope purpurascens|dmmmk|CBr
+Vulturine Guineafowl|Acryllium vulturinum|ikkbs|S
+Ocellated Turkey|Meleagris ocellata|ifheh
+Mountain Peacock-Pheasant|Polyplectron inopinatum|dmmdk|S
+=eagle
+Martial Eagle|Polemaetus bellicosus|mmmwd|CS
+Verreaux's Eagle|Aquila verreauxii|kkkky
+Wedge-tailed Eagle|Aquila audax|nmmmc
+Eastern Imperial Eagle|Aquila heliaca|tmmmd
+Bateleur|Terathopius ecaudatus|rkwkh|C
+Ornate Hawk-Eagle|Spizaetus ornatus|zmmwd|CS
+=hawk
+Secretarybird|Sagittarius serpentarius|ossks|CMo
+Swallow-tailed Kite|Elanoides forficatus|wkkwd|F
+Snail Kite|Rostrhamus sociabilis|dddjd
+African Harrier-Hawk|Polyboroides typus|jjjsy|My
+=vulture
+King Vulture|Sarcoramphus papa|owkwo
+Bearded Vulture|Gypaetus barbatus|wdkod|Mk
+=falcon
+Saker Falcon|Falco cherrug|cnnch|S
+Collared Falconet|Microhierax caerulescens|wkkzk|Mk
+=owl
+Great Gray Owl|Strix nebulosa|ggdsy|SBw
+Spotted Owl|Strix occidentalis|mmmtv|S
+Spectacled Owl|Pulsatrix perspicillata|mmmcv|Ew
+=earowl
+Eurasian Eagle-Owl|Bubo bubo|nnmto|S
+Verreaux's Eagle-Owl|Ketupa lactea|ggdsj|S
+Southern White-faced Owl|Ptilopsis granti|wggso|Mk
+Crested Owl|Lophostrix cristata|znmtd
+=nightjar
+Great Potoo|Nyctibius grandis|sggsd|S
+Standard-winged Nightjar|Caprimulgus longipennis|nnmtk|LS
+=hummer
+Long-tailed Sylph|Aglaiocercus kingii|eeaek
+Booted Racket-tail|Ocreatus underwoodii|eefek
+Sword-billed Hummingbird|Ensifera ensifera|neevk|Ew
+Giant Hummingbird|Patagona gigas|nnmtk
+Crimson Topaz|Topaza pella|krxhk|Bl
+Fiery-throated Hummingbird|Panterpe insignis|ueaek|Bo
+Booted Hillstar|Oreotrochilus estella|jnnwk|Be
+=toucan
+Keel-billed Toucan|Ramphastos sulfuratus|kkkll|By
+White-throated Toucan|Ramphastos tucanus|kkkkx|Bw
+Channel-billed Toucan|Ramphastos vitellinus|kkkok|By
+Collared Aracari|Pteroglossus torquatus|kffyc
+Emerald Toucanet|Aulacorhynchus prasinus|eeely
+Green Aracari|Pteroglossus viridis|kffyo
+Saffron Toucanet|Pteroglossus bailloni|hvvyl
+=hornbill
+Southern Yellow-billed Hornbill|Tockus leucomelas|wkkwy
+Red-billed Hornbill|Tockus erythrorhynchus|wddwr
+Trumpeter Hornbill|Bycanistes bucinator|kkkwd
+Oriental Pied Hornbill|Anthracoceros albirostris|kkkwc
+Silvery-cheeked Hornbill|Bycanistes brevis|skkwc
+=trogon
+Elegant Trogon|Trogon elegans|kekry
+Red-headed Trogon|Harpactes erythrocephalus|rnkrj
+Collared Trogon|Trogon collaris|fekry
+=paradise
+Raggiana Bird-of-paradise|Paradisaea raggiana|yxzmj|Be
+Magnificent Riflebird|Ptiloris magnificus|kkkkk|Ba
+=songbird
+Andean Cock-of-the-rock|Rupicola peruvianus|ookoh|C
+Long-wattled Umbrellabird|Cephalopterus penduliger|kkkkk|CL
+Red-capped Manakin|Ceratopipra mentalis|rkkkt
+Spangled Cotinga|Cotinga cayana|aakak|Bp
+Blue-winged Pitta|Pitta moluccensis|keblk|Mk
+Indian Pitta|Pitta brachyura|cebok|Mk
+Hooded Pitta|Pitta sordida|kebek
+Asian Fairy-bluebird|Irena puella|bbkkk
+Long-tailed Broadbill|Psarisomus dalhousiae|keblc|LBy
+Turquoise Jay|Cyanolyca turcosa|abbak|Mk
+Green Jay|Cyanocorax yncas|belyk|LBk
+White-throated Magpie-Jay|Calocitta formosa|kbbwk|CL
+Green Magpie|Cissa chinensis|llxlr|LMk
+Splendid Starling|Lamprotornis splendidus|upapk
+Golden-breasted Starling|Lamprotornis regius|ebpyk|L
+Gouldian Finch|Chloebia gouldiae|repyc|Bk
+Painted Bunting|Passerina ciris|belrs
+Orange-breasted Bunting|Passerina leclancherii|aabos|Ka
+Paradise Tanager|Tangara chilensis|lkkbk
+Golden Tanager|Tangara arthus|yhkhk|Ek
+Green-headed Tanager|Tangara seledon|leukk
+Red-legged Honeycreeper|Cyanerpes cyaneus|abkuk|Mk
+Green Honeycreeper|Chlorophanes spiza|kaaay
+Blue Dacnis|Dacnis cayana|bbkbd
+Long-tailed Paradise Whydah|Vidua paradisaea|kkkok|L
+Green-crowned Brilliant|Heliodoxa jacula|eeaek
+Royal Flycatcher|Onychorhynchus coronatus|rnncd|C
+Regent Bowerbird|Sericulus chrysocephalus|ykkky
+Satin Bowerbird|Ptilonorhynchus violaceus|uuuuc|Ep
+=kfisher
+Azure Kingfisher|Ceyx azureus|uuuok
+Banded Kingfisher|Lacedo pulchella|bukwr
+Ruddy Kingfisher|Halcyon coromanda|zzzor
+=beeeater
+Southern Carmine Bee-eater|Merops nubicoides|arrqk|Mk
+Northern Carmine Bee-eater|Merops nubicus|arrqk|Mk
+Blue-bearded Bee-eater|Nyctyornis athertoni|aeelk
+=parrot
+African Grey Parrot|Psittacus erithacus|ssgsk
+Eclectus Parrot|Eclectus roratus|eeueo
+Kea|Nestor notabilis|vvzvd
+Superb Parrot|Polytelis swainsonii|yeeer|L
+Sun Parakeet|Aratinga solstitialis|oyeok|L
+Turquoise Parrot|Neophema pulchella|beblk|L
+Yellow-naped Amazon|Amazona auropalliata|eeeld|Kh
+=macaw
+Blue-and-yellow Macaw|Ara ararauna|bbbyk|Ke
+Green-winged Macaw|Ara chloropterus|rrerc
+Military Macaw|Ara militaris|eebvk|Kr
+Chestnut-fronted Macaw|Ara severus|eebek
+=cockatoo
+Red-tailed Black Cockatoo|Calyptorhynchus banksii|kkrkd
+Gang-gang Cockatoo|Callocephalon fimbriatum|rggsc
+=pecker
+Common Flameback|Dinopium javanense|khhwk|CKr
+White Woodpecker|Melanerpes candidus|wkkws
+=cuckoo
+Violet Cuckoo|Chrysococcyx xanthorhynchus|pppwh
+=turaco
+Knysna Turaco|Tauraco corythaix|eefer|CEw
+Violet Turaco|Musophaga violacea|rpppy
+Hoatzin|Opisthocomus hoazin|znmcd|CL
+=dove
+Victoria Crowned Pigeon|Goura victoria|jjsxd|CMk
+Western Crowned Pigeon|Goura cristata|jjxjd|CMk
+Pink-necked Green Pigeon|Treron vernans|qvvlg
+Wompoo Fruit Dove|Ptilinopus magnificus|seepr
+Superb Fruit Dove|Ptilinopus superbus|zeewv|Kp
+</script>
+<script type="text/plain" data-tier="legendary">
+=ratite
+Southern Cassowary|Casuarius casuarius|bkkkd|CBr
+=kiwi
+North Island Brown Kiwi|Apteryx mantelli|nmmnc
+Great Spotted Kiwi|Apteryx maxima|ggdgc|S
+Little Spotted Kiwi|Apteryx owenii|gggsc|S
+=penguin
+Emperor Penguin|Aptenodytes forsteri|kjjwo|Ey
+Yellow-eyed Penguin|Megadyptes antipodes|yjjwo|Ey
+Galapagos Penguin|Spheniscus mendiculus|kkkwd|Ew
+=seabird
+Wandering Albatross|Diomedea exulans|wwkwq
+Southern Royal Albatross|Diomedea epomophora|wwkwq
+Waved Albatross|Phoebastria irrorata|wnmsy
+Short-tailed Albatross|Phoebastria albatrus|ywkwq
+=crane
+Red-crowned Crane|Grus japonensis|wwwwv|KrBk
+Siberian Crane|Leucogeranus leucogeranus|rwwwx
+Wattled Crane|Grus carunculata|wggkz|Bw
+Black-necked Crane|Grus nigricollis|ksgsv|Kr
+=heron
+White-bellied Heron|Ardea insignis|gddwd
+=stork
+Greater Adjutant|Leptoptilos dubius|odgsc
+Oriental Stork|Ciconia boyciana|wwkwk
+=ibis
+Northern Bald Ibis|Geronticus eremita|rkfkr|C
+Crested Ibis|Nipponia nippon|rwqwk|C
+=fowl
+Great Argus|Argusianus argus|inncc|TS
+Congo Peafowl|Afropavo congensis|rufus|C
+Green Peafowl|Pavo muticus|aefes|CT
+Himalayan Monal|Lophophorus impejanus|ezukk|C
+Temminck's Tragopan|Tragopan temminckii|brrrd|SBb
+Satyr Tragopan|Tragopan satyra|krnrd|SBb
+Crested Argus|Rheinardia ocellata|wmmmq|CTS
+=eagle
+Steller's Sea Eagle|Haliaeetus pelagicus|kkwko
+Crested Serpent Eagle|Spilornis cheela|kmmny|CS
+Madagascar Fish Eagle|Icthyophaga vociferoides|wmmnj
+Javan Hawk-Eagle|Nisaetus bartelsi|zmmcd|CS
+Spanish Imperial Eagle|Aquila adalberti|tmwmy
+New Guinea Eagle|Harpyopsis novaeguineae|nnmwd|C
+Solitary Eagle|Buteogallus solitarius|jjdjy
+=vulture
+Andean Condor|Vultur gryphus|qkwks
+Cinereous Vulture|Aegypius monachus|tmmmd
+Red-headed Vulture|Sarcogyps calvus|rkkkd
+=owl
+Blakiston's Fish Owl|Ketupa blakistoni|nnmty|S
+Seychelles Scops Owl|Otus insularis|zzntv|S
+=earowl
+Pel's Fishing Owl|Scotopelia peli|zzxtd|S
+=barnowl
+Ashy-faced Owl|Tyto glaucops|snmts
+Sooty Owl|Tyto tenebricosa|gkkdc
+=hornbill
+Great Hornbill|Buceros bicornis|ckwkh
+Rhinoceros Hornbill|Buceros rhinoceros|kkkko
+Wreathed Hornbill|Rhyticeros undulatus|wkkkc|By
+Southern Ground Hornbill|Bucorvus leadbeateri|rkkkk
+Knobbed Hornbill|Rhyticeros cassidix|okkkc
+=hummer
+Marvelous Spatuletail|Loddigesia mirabilis|upvwk
+Bee Hummingbird|Mellisuga helenae|rbjsk|Br
+=trogon
+Golden-headed Quetzal|Pharomachrus auriceps|heery
+Pavonine Quetzal|Pharomachrus pavoninus|eekrr
+=paradise
+Greater Bird-of-paradise|Paradisaea apoda|yxymj|Be
+King Bird-of-paradise|Cicinnurus regius|rrrwy
+Wilson's Bird-of-paradise|Diphyllodes respublica|brkfk|By
+Superb Bird-of-paradise|Lophorina superba|kkkkk|Ba
+King of Saxony Bird-of-paradise|Pteridophora alberti|kkkyk
+Ribbon-tailed Astrapia|Astrapia mayeri|ekkfk
+=macaw
+Hyacinth Macaw|Anodorhynchus hyacinthinus|uuuuk|Ey
+=cockatoo
+Palm Cockatoo|Probosciger aterrimus|kkkkd|Er
+=songbird
+Guianan Cock-of-the-rock|Rupicola rupicola|oomoo|C
+Three-wattled Bellbird|Procnias tricarunculatus|wxxxk
+Pompadour Cotinga|Xipholena punicea|xxwxs
+Superb Lyrebird|Menura novaehollandiae|mmzgk|L
+Helmet Vanga|Euryceros prevostii|kxkki
+Gurney's Pitta|Hydrornis gurneyi|ukmyk|Kb
+=dove
+Pheasant Pigeon|Otidiphaps nobilis|kxukr|L
+</script>
+<script type="text/plain" data-tier="only">
+=ratite
+Okarito Kiwi|Apteryx rowi|ggmgc
+=ibis
+Giant Ibis|Thaumatibis gigantea|sddmt
+=duck
+Madagascar Pochard|Aythya innotata|xxmxj
+Brazilian Merganser|Mergus octosetaceus|fddsk|C
+=rail
+Takahe|Porphyrio hochstetteri|uefur
+=shore
+Spoon-billed Sandpiper|Calidris pygmaea|znnwk
+=parrot
+Night Parrot|Pezoporus occidentalis|vvvld|S
+Orange-bellied Parrot|Neophema chrysogaster|eeulc|Kl
+=macaw
+Great Green Macaw|Ara ambiguus|lvbvd|Kr
+Blue-throated Macaw|Ara glaucogularis|bbbyk|Bb
+=cuckoo
+Sumatran Ground Cuckoo|Carpococcyx viridis|keflg|L
+=vulture
+White-rumped Vulture|Gyps bengalensis|dkkkd
+=dove
+Mindoro Bleeding-heart|Gallicolumba platenae|jnnwk
+=songbird
+Araripe Manakin|Antilophia bokermanni|rwkwk|CKr
+Bali Myna|Leucopsar rothschildi|wwwwy|CEb
+Stresemann's Bristlefront|Merulaxis stresemanni|kkmkk|C
+=hummer
+Honduran Emerald|Amazilia luciae|eefsr|Ba
+</script>
+<script>
+const PACK_SIZE = 8;
+const COOLDOWN_MS = 4 * 60 * 60 * 1000; // 4 Hours
+const MAX_STORED_PACKS = 3;
+
+const TIERS = [
+  {id:"common",    name:"Common",       chance:73.9,  pips:1},
+  {id:"rare",      name:"Rare",         chance:20,    pips:2},
+  {id:"epic",      name:"Epic",         chance:5,     pips:3},
+  {id:"legendary", name:"Legendary",    chance:1,     pips:4},
+  {id:"only",      name:"One and Only", chance:0.1,   pips:5}
+];
+
+const B = (id,name,sci,tier,shape,look,fact)=>({id,name,sci,tier,shape,look,fact});
+const BIRDS = [
+B("pigeon","Rock Pigeon","Columba livia","common","pigeon",{body:"#8d9bab",head:"#66758a",wing:"#aab6c2",bars:"#3c4552",neck:"#4f9c82",beak:"#4a4a52",legs:"#d4616b",eye:"#e0782f"},"Homing pigeons can find their way back from hundreds of miles away."),
+B("sparrow","House Sparrow","Passer domesticus","common","song",{body:"#9b7653",belly:"#cfc6b8",wing:"#7a4f2e",cap:"#7d8085",bib:"#2b2523",bars:"#f1e7d6",beak:"#3b302b"},"It takes dust baths, flicking dry soil through its feathers."),
+B("starling","European Starling","Sturnus vulgaris","common","song",{body:"#25303a",belly:"#2f4a46",wing:"#3a2f4d",spots:"#d9dccb",beak:"#e8c12f"},"A skilled mimic that can copy other birds and even car alarms."),
+B("robin","American Robin","Turdus migratorius","common","song",{body:"#6f6a66",head:"#34302f",belly:"#d9692b",wing:"#57524f",beak:"#e6b12c",ring:"#f4f1ea"},"It hunts earthworms by running, stopping and looking closely at the ground."),
+B("crow","American Crow","Corvus brachyrhynchos","common","song",{body:"#1d222b",wing:"#2c3442",beak:"#101318",bs:1.35,eye:"#0b0d10",legs:"#14171c"},"Crows can recognize individual human faces and remember them."),
+B("mallard","Mallard","Anas platyrhynchos","common","duck",{body:"#a9a49b",head:"#1f7a52",breast:"#6e3f2c",wing:"#7d766c",patch:"#3550b0",beak:"#e8c22c",ring:"#f4f1ea",tail:"#23262a"},"The loud, classic quack comes from the female."),
+B("goose","Canada Goose","Branta canadensis","common","duck",{long:1,body:"#8a735a",head:"#17191b",breast:"#d8cfc0",wing:"#6d5844",cheek:"#f6f4ee",beak:"#17191b",tail:"#202224"},"Flying in a V formation helps geese save energy."),
+B("dove","Mourning Dove","Zenaida macroura","common","pigeon",{body:"#b29b85",head:"#bfa892",wing:"#9a8573",spots:"#37302b",beak:"#3b3534",legs:"#c9606a",longtail:1},"Its wings make a whistling sound when it takes off."),
+B("finch","House Finch","Haemorhous mexicanus","common","song",{body:"#8b755f",head:"#c4453c",belly:"#d9cbb8",breast:"#cf5345",wing:"#6e5a48",bars:"#e8dccb",beak:"#7c6a5b"},"A male's red color comes from pigments in his food."),
+B("redwing","Red-winged Blackbird","Agelaius phoeniceus","common","song",{body:"#17191d",wing:"#23262b",shoulder:"#e0382b",shoulder2:"#f2c53a",beak:"#14161a",eye:"#07080a"},"Males flash their red shoulder patches to defend territory."),
+B("chickadee","Black-capped Chickadee","Poecile atricapillus","common","song",{body:"#8b9296",belly:"#efe4d2",wing:"#656d73",cap:"#14171a",bib:"#14171a",cheek:"#fbfaf6",beak:"#14171a",bs:.7},"It hides seeds one at a time and remembers the spots later."),
+B("goldfinch","American Goldfinch","Spinus tristis","common","song",{body:"#f4cb1f",wing:"#1c1d20",cap:"#1c1d20",bars:"#ffffff",beak:"#e98c45",bs:.85},"Males grow bright yellow feathers for spring and summer."),
+B("gull","Ring-billed Gull","Larus delawarensis","common","pigeon",{body:"#f6f7f5",head:"#fbfbf9",wing:"#9eacb8",tip:"#1d2126",beak:"#ecc331",beakring:"#1d2126",legs:"#d9bd3a",eye:"#c79b1d"},"It is named for the black ring around its bill."),
+B("junco","Dark-eyed Junco","Junco hyemalis","common","song",{body:"#545b66",head:"#3a3f49",belly:"#f2f0ea",wing:"#474d57",beak:"#e7b5a8",tailedge:"#f7f6f2",bs:.8},"It flashes white outer tail feathers when it flies."),
+B("swallow","Barn Swallow","Hirundo rustica","common","song",{body:"#223f7a",belly:"#e5a066",bib:"#a8482a",wing:"#1a2f5c",beak:"#17191d",bs:.65,fork:1},"It builds a cup-shaped nest out of little pellets of mud."),
+
+B("bluejay","Blue Jay","Cyanocitta cristata","rare","song",{body:"#3d7fd0",belly:"#e8edf1",wing:"#2c66b8",crest:"#3d7fd0",cheek:"#f6f8fa",collar:"#17202b",bars:"#ffffff",beak:"#1b2028",longtail:1},"Blue Jays can imitate the screams of hawks."),
+B("cardinal","Northern Cardinal","Cardinalis cardinalis","rare","song",{body:"#d3252c",wing:"#a91d27",crest:"#d3252c",mask:"#201416",beak:"#ee7a2e",bs:1.2,longtail:1},"Unlike many songbirds, female cardinals sing too."),
+B("hummer","Ruby-throated Hummingbird","Archilochus colubris","rare","hummer",{body:"#2f9163",belly:"#e8ece4",wing:"#52635e",throat:"#d71f47",beak:"#17191b"},"Hummingbirds can hover and even fly backward."),
+B("woodpecker","Pileated Woodpecker","Dryocopus pileatus","rare","song",{body:"#1b1d21",wing:"#25282d",crest:"#d92d27",stripe:"#f7f4ec",beak:"#5b5d62",bs:1.7,trunk:1},"It chisels rectangle-shaped holes into trees while hunting ants."),
+B("bluebird","Eastern Bluebird","Sialia sialis","rare","song",{body:"#2f6fd0",belly:"#f4eee4",breast:"#d5702f",wing:"#2457a8",beak:"#2a2a30"},"It nests in tree holes and in nest boxes put up by people."),
+B("heron","Great Blue Heron","Ardea herodias","rare","wader",{body:"#68849c",neck:"#a9a2a8",head:"#f1f1ee",stripe:"#1d242c",wing:"#506a82",beak:"#d6a23a",legs:"#6a6250"},"It stands very still, then strikes at fish with its long bill."),
+B("barnowl","Barn Owl","Tyto alba","rare","owl",{body:"#d19a54",belly:"#f8f0e1",face:"#fdfaf4",rim:"#a86f35",wing:"#b57f40",spots:"#6b5238",beak:"#dcc6a4",eye:"#17120f",heart:1},"It can catch mice in total darkness by listening for them."),
+B("oriole","Baltimore Oriole","Icterus galbula","rare","song",{body:"#f08a19",head:"#18191c",bib:"#18191c",wing:"#202125",bars:"#ffffff",beak:"#8492a3"},"It weaves a hanging, pouch-shaped nest."),
+B("waxwing","Cedar Waxwing","Bombycilla cedrorum","rare","song",{body:"#b98e66",belly:"#ead58c",wing:"#7b7777",crest:"#b98e66",mask:"#17171a",tailtip:"#f2cb28",shoulder:"#d93a2e",beak:"#222226",bs:.8},"Flockmates sometimes pass a berry from bill to bill."),
+B("kingfisher","Belted Kingfisher","Megaceryle alcyon","rare","song",{body:"#4b7894",belly:"#f6f5f0",collar:"#f6f5f0",band:"#4b7894",wing:"#3a617c",crest:"#4b7894",beak:"#24282e",bs:1.8},"Females have an extra rusty band across the belly."),
+
+B("baldeagle","Bald Eagle","Haliaeetus leucocephalus","epic","raptor",{body:"#4a3020",head:"#fbfaf5",wing:"#38241a",tail:"#fbfaf5",beak:"#f0bb25",legs:"#f0bb25",eye:"#d9a514"},"It builds some of the largest nests of any North American bird."),
+B("puffin","Atlantic Puffin","Fratercula arctica","epic","puffin",{body:"#17191f",belly:"#f8f8f4",face:"#eef0ee",beak:"#ef6425",beak2:"#4b5870",legs:"#ef6425"},"It can carry several small fish crosswise in its bill at once."),
+B("snowyowl","Snowy Owl","Bubo scandiacus","epic","owl",{body:"#f7f9f9",belly:"#ffffff",face:"#ffffff",rim:"#dbe3e6",wing:"#e3eaec",spots:"#3d444c",beak:"#33373d",eye:"#f2bd16"},"Living in the far north, it often hunts in daylight."),
+B("peregrine","Peregrine Falcon","Falco peregrinus","epic","raptor",{body:"#4d6073",belly:"#eee5d4",head:"#252f3b",wing:"#3a495a",tail:"#4d6073",mask:"#1d252f",bars:"#4a4e55",beak:"#e8bd35",legs:"#e8bd35",eye:"#17120f"},"In a hunting dive it can pass 180 miles per hour."),
+B("flamingo","American Flamingo","Phoenicopterus ruber","epic","wader",{body:"#f4687a",neck:"#f77f8d",head:"#f77f8d",wing:"#e24a61",beak:"#f5d6cd",beaktip:"#1c1c20",legs:"#e2677a",bend:1},"Its pink color comes from pigments in the food it eats."),
+B("macaw","Scarlet Macaw","Ara macao","epic","parrot",{body:"#dc2430",head:"#dc2430",wing:"#f4c322",wing2:"#2457bd",tail:"#c61f2c",face:"#f6efe8",beak:"#efe4cf",beak2:"#2a2628"},"Scarlet Macaws can live for several decades."),
+B("toucan","Toco Toucan","Ramphastos toco","epic","toucan",{body:"#191a1f",bib:"#fbfaf2",wing:"#272930",beak:"#f59a1c",beaktip:"#17181c",ringc:"#2f79d0",vent:"#d9332e"},"Its huge bill helps it release body heat."),
+
+B("quetzal","Resplendent Quetzal","Pharomachrus mocinno","legendary","quetzal",{body:"#0f9a6b",belly:"#d6243a",wing:"#17b57d",tail:"#12a875",beak:"#e8c63a"},"Breeding males grow tail plumes longer than their bodies."),
+B("shoebill","Shoebill","Balaeniceps rex","legendary","wader",{body:"#728395",neck:"#7d8d9e",head:"#7d8d9e",wing:"#586979",beak:"#c9b894",legs:"#4d535b",shoe:1,eye:"#e6d27a"},"Shoebills greet each other by clattering their enormous bills."),
+B("harpy","Harpy Eagle","Harpia harpyja","legendary","raptor",{body:"#2d3138",belly:"#f3f2ee",head:"#a9afb6",wing:"#202329",tail:"#555b63",band:"#2d3138",crest:"#6a7078",beak:"#2a2d33",legs:"#e7c33f",eye:"#2a1a12"},"Its largest talons are about as long as a grizzly bear's claws."),
+B("condor","California Condor","Gymnogyps californianus","legendary","raptor",{body:"#17181c",head:"#ee8058",wing:"#24262c",tail:"#101114",ruff:"#0b0c0e",bars:"",patch:"#e9e9e4",beak:"#e9d9bc",legs:"#a9a49c",eye:"#a8201c"},"Its wings stretch about nine and a half feet from tip to tip."),
+B("whooper","Whooping Crane","Grus americana","legendary","wader",{body:"#fafbf8",neck:"#fafbf8",head:"#fafbf8",wing:"#e6eae6",crown:"#c92d30",stripe:"#1b1d21",beak:"#c2a864",legs:"#2a2d31",tip:"#1b1d21"},"At about five feet, it is the tallest bird in North America."),
+
+B("kakapo","Kākāpō","Strigops habroptilus","only","kakapo",{body:"#6e9a35",belly:"#b9c957",face:"#c9b67a",wing:"#55802a",spots:"#2f4a1c",beak:"#e6dcc3",legs:"#b59a7c"},"A flightless, night-active bird and the heaviest parrot in the world."),
+B("spix","Spix's Macaw","Cyanopsitta spixii","only","parrot",{body:"#3279b8",head:"#9bc3da",wing:"#276197",wing2:"#1d4d80",tail:"#22578c",face:"#4a525c",beak:"#26282d",beak2:"#17181c"},"It vanished from the wild around 2000. Captive-bred birds began returning in 2022."),
+B("phileagle","Philippine Eagle","Pithecophaga jefferyi","only","raptor",{body:"#5b3d28",belly:"#f4ead8",head:"#e9dcc3",wing:"#432c1d",tail:"#6d5138",crest:"#8a6a45",beak:"#4b6f8f",legs:"#e6bd3a",eye:"#6f93ad",bigbeak:1},"The national bird of the Philippines, with a shaggy crest and blue-grey eyes.")
+];
+
+let uid = 0;
+const P = (d,f,x="")=>`<path d="${d}" fill="${f}" ${x}/>`;
+const E = (cx,cy,rx,ry,f,x="")=>`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${f}" ${x}/>`;
+const C = (cx,cy,r,f,x="")=>E(cx,cy,r,r,f,x);
+const L = (d,s,w,x="")=>`<path d="${d}" fill="none" stroke="${s}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" ${x}/>`;
+const eye = (x,y,c="#14100e",r=4)=>C(x,y,r+1.2,"rgba(255,255,255,.55)")+C(x,y,r,c)+C(x,y,r*.5,"#0b0908")+C(x+r*.35,y-r*.35,r*.28,"#fff");
+const clip = (shapes,inner)=>{const id="c"+(++uid);return `<clipPath id="${id}">${shapes}</clipPath><g clip-path="url(#${id})">${inner}</g>`};
+const branch = (y)=>L(`M18 ${y+4} Q100 ${y-5} 184 ${y+1}`,"#7a5a41",7)+L(`M150 ${y-1} l20 -13`,"#7a5a41",4);
+const dots = (list,c,r=2)=>list.map(([x,y])=>C(x,y,r,c)).join("");
+
+const SHAPES = {
+song(k){
+  const s=k.bs||1, tx=k.longtail?14:30;
+  let o = k.trunk ? P("M130 0H172V150H130Z","#8b6a4c")+L("M142 10v34M160 70v40M146 112v26","#6d5039",3) : branch(124);
+  const tail = k.fork ? `M78 92 L10 108 L48 110 L24 138 L92 108Z` : `M76 90 L${tx} 122 L${tx+14} 136 L94 108Z`;
+  o+=P(tail,k.wing);
+  if(k.tailedge) o+=L(`M${tx+14} 135 L92 109`,k.tailedge,4);
+  if(k.tailtip) o+=P(`M${tx} 122 L${tx+14} 136 L${tx+24} 129 L${tx+10} 115Z`,k.tailtip);
+  o+=L("M96 108l-4 16M114 106l1 17",k.legs||"#6b4a3a",3.5);
+  if(k.crest) o+=P("M110 52 Q110 30 100 14 Q132 22 146 46Z",k.crest);
+  const body=`<ellipse cx="98" cy="87" rx="40" ry="28" transform="rotate(-27 98 87)"/>`, head=`<circle cx="126" cy="60" r="22"/>`;
+  let inner=P("M0 0H200V150H0Z",k.body);
+  if(k.head) inner+=C(127,57,25,k.head);
+  if(k.belly) inner+=P("M150 62 Q126 86 70 100 L74 140 L170 130Z",k.belly);
+  if(k.breast) inner+=E(134,86,24,21,k.breast);
+  if(k.band) inner+=L("M108 100 Q132 94 150 76",k.band,8)+L("M108 112 Q135 108 154 90","#bd6a35",5);
+  if(k.cap) inner+=P("M96 62 Q118 52 160 52 L160 30 L96 30Z",k.cap);
+  if(k.cheek) inner+=E(134,67,17,9,k.cheek,'transform="rotate(-12 134 67)"');
+  if(k.bib) inner+=P("M154 62 Q136 66 128 74 Q134 90 150 88Z",k.bib);
+  if(k.collar) inner+=L("M108 66 Q118 88 148 76",k.collar,5);
+  if(k.mask) inner+=P("M118 52 L158 48 L158 70 L132 66Z",k.mask);
+  if(k.stripe) inner+=L("M150 68 Q128 70 112 82 L96 90",k.stripe,5);
+  if(k.ring) inner+=L("M130 51a8 7 0 0 1 11 1",k.ring,2.5);
+  if(k.spots) inner+=dots([[122,92],[134,80],[114,102],[104,76],[128,70],[96,108],[84,96],[116,84],[140,68]],k.spots,1.8);
+  o+=clip(body+head,inner);
+  o+=P("M114 76 Q92 66 70 88 Q56 104 40 114 Q76 118 100 106 Q118 94 114 76Z",k.wing);
+  if(k.bars) o+=L("M100 82 Q88 94 70 102",k.bars,3.5)+L("M108 90 Q96 102 80 108",k.bars,2.5);
+  if(k.shoulder) o+=E(103,82,k.shoulder2?11:4,k.shoulder2?7:3,k.shoulder,'transform="rotate(-30 103 82)"');
+  if(k.shoulder2) o+=L("M95 93 Q106 90 113 83",k.shoulder2,3.5);
+  o+=P(`M144 ${60-7*Math.min(s,1.3)} L${146+19*s} 62 L144 ${64+5*Math.min(s,1.3)}Z`,k.beak);
+  return o+eye(135,56,k.eye,3.6);
+},
+pigeon(k){
+  let o=L("M20 130H180","#8b8f8a",5);
+  o+=P(k.longtail?"M70 92 L6 126 L22 130 L84 112Z":"M72 88 L26 112 L36 124 L86 112Z",k.tip||k.wing);
+  o+=L("M94 110l-3 18h-8M114 110l2 18h9",k.legs,4);
+  const body=`<ellipse cx="102" cy="92" rx="45" ry="29" transform="rotate(-14 102 92)"/>`;
+  const neck=`<path d="M118 70 Q122 40 140 38 Q160 40 154 62 Q156 84 134 96Z"/>`;
+  let inner=P("M0 0H200V150H0Z",k.body)+P("M112 66 L124 30 L172 30 L158 62Z",k.head);
+  if(k.neck) inner+=L("M120 72 Q136 82 158 66",k.neck,13);
+  o+=clip(body+neck,inner);
+  o+=P("M122 82 Q94 62 66 86 Q50 100 34 108 Q74 118 104 108 Q126 98 122 82Z",k.wing);
+  if(k.bars) o+=L("M90 88 L76 108M104 90 L92 109",k.bars,5);
+  if(k.spots) o+=dots([[88,92],[100,98],[76,100],[108,88]],k.spots,3.2);
+  if(k.tip) o+=P("M60 100 L24 112 L66 112Z",k.tip);
+  o+=P("M151 47 Q166 49 172 58 Q160 59 151 57Z",k.beak);
+  if(k.beakring) o+=L("M163 51 L161 58",k.beakring,3.5);
+  return o+eye(142,50,k.eye,3.4);
+},
+duck(k){
+  const g=k.long, hx=g?148:142, hy=g?36:58;
+  let o=P("M58 92 L26 74 L40 104Z",k.tail);
+  if(g) o+=L(`M126 96 Q148 80 144 42`,k.head,19);
+  o+=P("M42 96 Q54 74 102 78 Q150 74 166 96 Q164 122 112 124 Q58 124 42 96Z",k.body);
+  o+=P("M166 96 Q164 118 134 122 Q124 98 142 84 Q160 84 166 96Z",k.breast);
+  o+=P("M62 94 Q90 76 130 94 Q106 114 62 100 L40 94Z",k.wing);
+  if(k.patch) o+=L("M80 103 L108 105",k.patch,6);
+  if(!g) o+=P("M128 90 Q122 62 136 52 L158 60 Q152 76 154 90Z",k.head)+C(hx,hy,21,k.head)+L("M127 78 Q140 86 154 78",k.ring,4);
+  else o+=E(hx+4,hy,19,14,k.head);
+  if(k.cheek) o+=P(`M${hx-7} ${hy-2} Q${hx+2} ${hy+6} ${hx+12} ${hy+10} Q${hx-4} ${hy+18} ${hx-10} ${hy+6}Z`,k.cheek);
+  o+=P(g?`M164 31 Q178 34 184 42 Q172 45 162 43Z`:`M159 54 Q178 58 184 66 Q170 70 156 66Z`,k.beak);
+  o+=eye(g?157:149,g?32:52,"#2a1c12",3.2);
+  return o+P("M0 112 Q30 104 60 112 T120 112 T200 112 V150 H0Z","#7fb4cc",'opacity=".75"')+L("M30 128h34M112 136h46","#eaf6fb",3);
+},
+wader(k){
+  let o=P("M0 134 Q100 126 200 134 V150 H0Z","#8cb7b5");
+  o+=L(k.bend?"M88 92 L80 114 L92 140M104 90 L118 108 L104 116":"M88 94 L82 116 L86 140M106 94 L108 116 L116 140",k.legs,4.5);
+  if(k.shoe) o+=L("M108 72 Q132 66 128 46",k.neck,22);
+  else o+=L(k.bend?"M116 76 C160 74 160 52 134 50 C112 46 118 22 144 26":"M114 76 C156 68 108 46 142 30",k.neck,11);
+  o+=P("M48 96 Q62 60 108 64 Q132 70 126 86 Q112 104 78 98Z",k.body);
+  o+=P("M54 94 Q70 68 108 74 Q100 94 70 96 L34 112Z",k.wing);
+  if(k.tip) o+=P("M56 100 L34 112 L68 100Z",k.tip);
+  if(k.shoe){
+    o+=C(130,40,20,k.head)+L("M118 24 l-8 -8",k.head,5);
+    o+=P("M136 28 Q168 30 178 58 Q182 74 170 78 Q168 68 160 66 Q134 66 134 48Z",k.beak);
+    o+=L("M138 54 Q160 58 172 72","#8d7c5f",2.5)+dots([[158,40],[164,52],[148,60]],"#8d7c5f",2);
+    return o+eye(134,34,k.eye,4.5);
+  }
+  const hy=k.bend?29:29;
+  o+=E(145,hy,13,10,k.head);
+  if(k.crown) o+=P("M138 22 Q148 15 157 23 L152 26Z",k.crown)+L("M146 33 Q151 36 156 33",k.stripe,3.5);
+  else if(k.stripe) o+=L("M156 24 Q140 18 118 24",k.stripe,3.5);
+  if(k.bend) o+=P("M153 22 Q172 22 174 36 L170 52 Q166 38 154 36Z",k.beak)+P("M173 36 L170 52 Q166 42 164 36Z",k.beaktip);
+  else o+=P("M154 24 L188 34 L153 34Z",k.beak);
+  return o+eye(148,27,k.eye||"#e0a81c",2.6);
+},
+owl(k){
+  let o=branch(128);
+  o+=P("M100 18 Q148 18 150 70 Q156 118 100 128 Q44 118 50 70 Q52 18 100 18Z",k.body);
+  o+=E(100,98,29,29,k.belly);
+  o+=P("M54 62 Q40 100 76 122 Q66 94 72 68Z",k.wing)+P("M146 62 Q160 100 124 122 Q134 94 128 68Z",k.wing);
+  o+=dots([[88,92],[104,100],[116,90],[94,110],[112,112],[62,86],[138,88],[66,102],[134,104],[82,28],[116,26],[100,22]],k.spots,2.4);
+  if(k.heart) o+=P("M100 40 C82 22 58 36 64 60 C68 80 90 88 100 92 C110 88 132 80 136 60 C142 36 118 22 100 40Z",k.face,`stroke="${k.rim}" stroke-width="4"`);
+  else o+=E(84,54,20,19,k.face,`stroke="${k.rim}" stroke-width="2"`)+E(116,54,20,19,k.face,`stroke="${k.rim}" stroke-width="2"`);
+  o+=eye(85,54,k.eye,7.5)+eye(115,54,k.eye,7.5);
+  o+=P("M94 62 Q100 58 106 62 L100 77Z",k.beak);
+  return o+L("M84 125v8M92 126v8M108 126v8M116 125v8","#b08c5e",4);
+},
+raptor(k){
+  let o=branch(126);
+  o+=P("M72 100 L44 144 L72 146 L98 112Z",k.tail||k.wing);
+  if(k.crest) o+=P("M118 34 L92 12 L116 22 L106 2 L128 20 L132 4 L140 26Z",k.crest);
+  const body=`<path d="M112 46 Q146 56 140 94 Q130 124 94 120 Q68 112 74 84 Q86 52 112 46Z"/>`;
+  let inner=P("M0 0H200V150H0Z",k.body);
+  if(k.belly) inner+=E(126,96,26,36,k.belly,'transform="rotate(24 126 96)"');
+  if(k.band) inner+=L("M96 62 Q120 82 150 70",k.band,13);
+  if(k.bars) inner+=L("M112 84h28M108 94h30M104 104h28M104 114h20",k.bars,2.5);
+  o+=clip(body,inner);
+  o+=P("M108 62 Q76 62 68 96 Q62 118 46 134 Q86 128 106 104 Q122 80 108 62Z",k.wing);
+  if(k.patch) o+=L("M72 112 Q88 106 100 92",k.patch,4);
+  o+=L("M98 116v10M118 116v10",k.legs,8)+L("M92 128h14M112 128h14","#34302b",3);
+  if(k.ruff) o+=E(116,58,24,11,k.ruff,'transform="rotate(12 116 58)"');
+  o+=C(124,k.ruff?36:40,k.ruff?17:23,k.head);
+  if(k.mask) o+=P("M126 40 Q142 44 136 68 Q126 58 126 40Z",k.mask);
+  const dy=k.ruff?-4:0, h=k.bigbeak?6:0;
+  o+=P(`M139 ${30+dy-h} Q166 ${30+dy-h} 166 ${50+dy} Q166 ${58+dy+h} 158 ${60+dy+h} Q158 ${50+dy} 140 ${49+dy+h/2}Z`,k.beak);
+  return o+eye(133,35+dy,k.eye,4)+(k.ruff?"":L("M124 28 Q135 25 144 30","rgba(0,0,0,.45)",3));
+},
+parrot(k){
+  let o=P("M78 92 L22 148 L44 148 L100 108Z",k.tail)+L("M80 106 L40 146",k.wing2,5)+branch(122);
+  o+=P("M110 42 Q144 52 134 92 Q122 122 90 116 Q66 104 78 76 Q90 46 110 42Z",k.body);
+  o+=P("M106 64 Q76 66 70 98 Q64 118 50 130 Q86 126 104 104 Q116 84 106 64Z",k.wing);
+  o+=P("M88 94 Q78 114 50 130 Q84 126 100 108Z",k.wing2);
+  o+=C(120,44,24,k.head)+E(133,46,12,13,k.face);
+  o+=P("M136 26 Q168 28 164 62 Q162 70 156 72 Q156 54 138 52 Q132 38 136 26Z",k.beak);
+  o+=P("M139 53 Q154 54 156 66 Q142 70 136 60Z",k.beak2);
+  return o+eye(128,38,"#e9d35a",3.8)+L("M98 114v9M116 112v10","#6d6a68",5);
+},
+toucan(k){
+  let o=P("M70 98 L38 140 L60 146 L90 112Z",k.body)+branch(120)+C(82,116,9,k.vent);
+  o+=P("M94 36 Q124 38 122 76 Q118 114 88 118 Q60 108 66 78 Q70 38 94 36Z",k.body);
+  o+=P("M92 40 Q122 42 120 66 Q116 86 100 84 Q86 66 92 40Z",k.bib);
+  o+=P("M88 66 Q66 70 62 96 Q60 112 52 124 Q84 118 94 98 Q100 78 88 66Z",k.wing);
+  o+=P("M110 34 Q162 22 182 52 Q188 68 178 74 Q170 60 146 62 Q122 66 112 58Z",k.beak);
+  o+=P("M162 33 Q182 46 182 62 Q182 72 178 74 Q172 62 164 60Z",k.beaktip)+L("M114 49 Q142 44 172 58","#b8531a",2);
+  return o+C(103,45,8,k.beak)+C(103,45,6,k.ringc)+C(103,45,4,"#101114")+C(104.5,43.5,1.2,"#fff")+L("M80 118v6M98 116v7","#4d6a8a",5);
+},
+puffin(k){
+  let o=P("M30 134 Q60 120 104 128 Q150 118 176 134 L184 150 H20Z","#8d938c");
+  o+=L("M88 112v18M108 112v18",k.legs,5)+L("M80 131h16M102 131h16",k.legs,5);
+  o+=P("M100 22 Q132 24 132 62 Q140 100 112 116 Q84 126 72 104 L52 116 Q66 92 68 66 Q70 24 100 22Z",k.body);
+  o+=P("M116 72 Q138 96 112 114 Q92 118 88 100 Q92 78 116 72Z",k.belly);
+  o+=P("M110 30 Q132 34 130 54 Q126 70 108 66 Q92 56 96 42 Q100 32 110 30Z",k.face);
+  o+=P("M126 36 Q158 40 164 56 Q150 68 126 66 Q118 50 126 36Z",k.beak);
+  o+=P("M126 36 Q135 37 139 40 Q132 52 137 66 L126 66 Q118 50 126 36Z",k.beak2)+L("M139 40 Q132 52 137 66M150 45 Q146 54 149 64","#f6c64a",2.5);
+  return o+eye(113,45,"#2a1c12",3.4)+L("M107 40h12M114 49 Q104 54 98 52","#2b2f36",1.6);
+},
+hummer(k){
+  let o=C(176,94,6,"#f4b62c")+[0,72,144,216,288].map(a=>E(176,80,5,12,"#e4547c",`transform="rotate(${a} 176 94)"`)).join("")+C(176,94,5,"#f4b62c")+L("M176 108 Q170 130 178 150","#4f8a4a",4);
+  o+=P("M92 66 Q70 20 28 14 Q44 48 76 78Z",k.wing,'opacity=".55"');
+  o+=P("M72 96 L34 124 L50 124 L46 138 L86 108Z","#27382f");
+  o+=E(94,86,32,18,k.body,'transform="rotate(-35 94 86)"')+E(103,93,22,10,k.belly,'transform="rotate(-35 103 93)"');
+  o+=C(116,62,16,k.body)+P("M116 66 Q130 62 130 70 Q122 84 108 78Z",k.throat);
+  o+=P("M128 55 L180 82 L130 64Z",k.beak);
+  o+=P("M96 76 Q58 58 24 74 Q58 94 94 90Z",k.wing);
+  return o+eye(121,57,"#14100e",3);
+},
+quetzal(k){
+  let o=L("M84 80 C58 102 62 128 24 148",k.tail,8)+L("M94 84 C80 112 92 128 66 150","#0d8760",7);
+  o+=P("M76 74 L52 112 L68 118 L96 86Z","#eef2ee")+branch(96);
+  o+=P("M114 28 Q142 40 130 68 Q116 96 86 90 Q68 82 80 60 Q92 32 114 28Z",k.body);
+  o+=P("M132 52 Q134 78 106 90 Q88 94 86 82 Q108 74 114 54Z",k.belly);
+  o+=P("M108 52 Q80 50 72 74 Q66 88 52 98 Q86 98 104 80 Q116 66 108 52Z",k.wing);
+  o+=L("M74 82 Q90 76 100 62M64 92 Q86 88 104 72","#0b6e4f",2.5);
+  o+=P("M102 28 Q104 6 126 10 Q142 12 144 30Z",k.body)+C(124,34,17,k.body);
+  o+=P("M138 28 Q152 31 154 40 Q146 42 138 40Z",k.beak);
+  return o+eye(129,31,"#241610",3.4);
+},
+kakapo(k){
+  let o=P("M0 134 Q100 122 200 134 V150 H0Z","#7c8a52");
+  o+=P("M62 106 L28 132 L72 128Z",k.wing);
+  o+=P("M114 28 Q154 40 148 88 Q142 130 98 130 Q48 128 54 90 Q62 54 84 46 Q92 28 114 28Z",k.body);
+  o+=E(120,102,24,24,k.belly);
+  o+=P("M92 66 Q58 74 52 106 Q54 118 42 124 Q90 130 104 98Z",k.wing);
+  o+=E(123,56,23,21,k.face);
+  o+=L("M70 90h8M82 80h8M72 104h9M90 92h8M64 112h8M86 110h8M100 44h6M96 56h7M116 100h7M130 110h7M112 118h7M132 92h6",k.spots,3);
+  o+=L("M136 66l18 6M136 70l16 12M112 68l-12 8","#8c7a45",1.5);
+  o+=P("M132 50 Q154 50 154 66 Q152 76 144 78 Q144 66 132 66Z",k.beak);
+  return o+eye(122,47,"#2a1a10",4.5)+L("M90 128v8h12M118 128v8h12",k.legs,5);
+},
+fowl(k){
+  let o=L("M20 134H180","#8b8f6a",5);
+  o+=P(k.train?"M74 84 Q30 78 8 134 Q56 126 90 108Z":k.longleg?"M62 90 L38 78 L52 102Z":"M70 88 L28 74 L40 108 L76 106Z",k.tail);
+  if(k.train) o+=dots([[32,114],[46,102],[56,116],[66,100]],k.body,4.5);
+  o+=L(k.longleg?"M92 108l-6 24h-10M112 108l6 24h12":"M92 108l-3 24h-9M114 108l2 24h10",k.legs,5);
+  o+=P("M114 66 Q148 76 138 102 Q124 122 90 118 Q58 108 62 90 Q80 66 114 66Z",k.body);
+  o+=P("M138 90 Q130 118 96 118 Q112 104 118 84Z",k.belly);
+  o+=P("M112 78 Q82 72 66 94 Q78 112 108 106 Q124 94 112 78Z",k.wing);
+  o+=P("M114 72 Q118 44 136 40 L152 58 Q142 72 138 84Z",k.head)+C(137,52,15,k.head);
+  o+=P("M148 47 L166 56 L148 60Z",k.beak);
+  return o+eye(142,49,k.eye,3);
+},
+penguin(k){
+  let o=P("M26 136 Q64 124 104 130 Q150 122 178 136 L184 150 H18Z","#cfe0e8");
+  o+=P("M88 128h-14l12 7h16zM112 128h18l-8 7h-14z","#e08a3a");
+  o+=P("M100 20 Q128 22 128 52 Q142 88 128 116 Q114 134 92 130 Q68 122 70 88 L62 122 Q66 84 76 60 Q74 22 100 20Z",k.body);
+  o+=P("M112 58 Q138 88 124 116 Q108 134 92 122 Q86 94 112 58Z",k.belly);
+  o+=C(103,42,21,k.head);
+  o+=P("M88 66 Q70 86 70 112 Q86 98 98 76Z",k.wing);
+  o+=P("M119 37 L148 48 L119 52Z",k.beak);
+  return o+eye(112,38,k.eye,3);
+},
+shore(k){
+  let o=P("M0 136 Q100 126 200 136 V150 H0Z","#c9b78e");
+  o+=L("M92 100 L86 118 L90 134M110 100 L116 118 L114 134",k.legs,3.5);
+  o+=P("M66 80 L30 94 L68 96Z",k.tail);
+  o+=P("M58 90 Q76 62 118 66 Q142 72 132 92 Q116 112 86 104Z",k.body);
+  o+=P("M132 86 Q118 112 86 104 Q112 96 120 78Z",k.belly);
+  o+=P("M62 90 Q80 70 114 78 Q100 98 74 96 L38 100Z",k.wing);
+  o+=C(131,60,17,k.head)+P("M118 68 L134 76 L124 86 L112 80Z",k.head);
+  o+=P("M145 56 L180 66 L144 64Z",k.beak);
+  return o+eye(136,56,k.eye,3);
+},
+ratite(k){
+  let o=L("M16 140H184","#b39b6c",5);
+  o+=L("M88 96 L78 120 L86 138h14M108 96 L118 120 L112 138h14","#9a7a66",6);
+  o+=L("M112 76 Q140 68 134 32",k.head,10);
+  o+=P("M46 82 Q56 52 96 56 Q130 60 128 82 Q120 108 86 108 Q50 106 46 82Z",k.body);
+  o+=P("M52 76 Q76 62 108 74 Q96 98 70 94 L36 106Z",k.wing);
+  o+=E(137,28,12,10,k.head)+P("M146 24 L168 33 L145 35Z",k.beak);
+  return o+eye(140,25,k.eye,2.8);
+},
+kiwi(k){
+  let o=L("M16 136H184","#8d7b52",5);
+  o+=L("M82 108 L78 132h14M106 108 L110 132h14","#c2a27a",7);
+  o+=P("M42 98 Q44 56 92 58 Q130 60 134 86 Q136 118 90 118 Q48 118 42 98Z",k.body);
+  o+=L("M58 84l-8 12M74 76l-9 13M92 74l-8 14M66 98l-8 10M86 96l-7 12M106 90l-7 12",k.wing,3);
+  o+=C(130,70,17,k.head)+L("M143 74 Q168 90 176 130",k.beak,4);
+  return o+eye(134,66,k.eye,2.8);
+}};
+
+const COLORS={k:"#1b1d22",w:"#f6f5f0",g:"#8e969c",d:"#4d545c",s:"#c4cbd0",n:"#7c5636",m:"#4b3222",t:"#b8956a",c:"#ead9b8",r:"#d12f2c",x:"#8e3b25",o:"#ee8222",y:"#f4cb23",l:"#8cbf3a",e:"#2f8f55",f:"#1f5c45",a:"#1fa6a0",b:"#2f73c9",u:"#223c7c",i:"#86c0e4",p:"#6e4aa8",q:"#f27f98",v:"#7f8040",h:"#d99c1c",z:"#c0602a",j:"#5c7590"};
+const FAM={
+songbird:["song",{},"Perching birds","Three toes point forward and one back, which suits gripping branches."],
+finch:["song",{bs:1.1},"Sparrows, finches and relatives","Many birds in this group have sturdy bills for cracking seeds."],
+duck:["duck",{},"Ducks","Oil from a gland near the tail helps a duck stay waterproof."],
+goose:["duck",{long:1},"Geese","Many geese stay with the same partner for years."],
+swan:["duck",{long:1},"Swans","Swans are among the heaviest birds that can fly."],
+rail:["fowl",{longleg:1},"Rails, coots and relatives","Long toes help many of these birds walk on soft ground."],
+grebe:["duck",{},"Grebes and loons","Legs set far back make them great divers and awkward walkers."],
+cormorant:["duck",{long:1,hook:1},"Cormorants and darters","They often hold their wings open to dry."],
+pelican:["duck",{long:1,pouch:1},"Pelicans","A stretchy throat pouch works like a fishing net."],
+heron:["wader",{},"Herons and relatives","Herons usually fly with the neck folded into an S shape."],
+stork:["wader",{thick:1},"Storks","Many storks clatter their bills to communicate."],
+crane:["wader",{},"Cranes","Cranes are known for their leaping dances."],
+ibis:["wader",{curve:1},"Ibises","They probe for food with long, down-curved bills."],
+spoonbill:["wader",{spoon:1},"Spoonbills","They sweep their bills from side to side to catch food."],
+flamingo:["wader",{bend:1},"Flamingos","Flamingos feed with their heads upside down."],
+ratite:["ratite",{},"Large flightless birds","They cannot fly, but their legs are very powerful."],
+kiwi:["kiwi",{},"Kiwis","A kiwi's nostrils are at the tip of its bill."],
+trumpet:["wader",{},"Trumpeters, seriemas and the sunbittern","These tropical American birds find much of their food on foot."],
+shore:["shore",{},"Shorebirds","Many shorebirds migrate very long distances."],
+curlew:["shore",{curve:1},"Curlews","A long curved bill reaches food buried in mud."],
+gull:["pigeon",{tipped:1},"Gulls and terns","Many gulls will eat almost anything."],
+seabird:["pigeon",{tipped:1},"Seabirds","Birds like these spend much of their lives at sea."],
+auk:["puffin",{},"Auks and puffins","They use their wings to swim underwater."],
+penguin:["penguin",{},"Penguins","Their wings work as flippers."],
+dove:["pigeon",{},"Pigeons and doves","Parents feed their chicks a rich food called crop milk."],
+fowl:["fowl",{},"Game birds","Most of these birds nest on the ground."],
+hawk:["raptor",{},"Hawks, kites and relatives","Hooked bills and sharp talons suit a life of hunting."],
+eagle:["raptor",{},"Eagles","An eagle's eyesight is far sharper than ours."],
+vulture:["raptor",{ruffed:1},"Vultures and condors","By eating dead animals, they help clean up the land."],
+falcon:["raptor",{},"Falcons and caracaras","Falcons have a tooth-like notch on the bill."],
+owl:["owl",{},"Owls","Soft feather edges help most owls fly very quietly."],
+earowl:["owl",{tufts:1},"Owls","Ear tufts are only feathers. An owl's real ears are hidden lower down."],
+barnowl:["owl",{heart:1},"Barn owls and relatives","A heart-shaped face helps guide sound to the ears."],
+nightjar:["song",{bs:.55,bigeye:1},"Nightjars and relatives","Most of these birds are active at night."],
+hummer:["hummer",{},"Hummingbirds","Their wings beat so fast that they hum."],
+swift:["song",{fork:1,bs:.6},"Swifts and swallows","They catch insects while flying."],
+pecker:["song",{trunk:1,bs:1.5},"Woodpeckers","A long tongue helps them pull insects out of holes."],
+kfisher:["song",{bs:1.9},"Kingfishers","Many kingfishers hunt insects and lizards as well as fish."],
+beeeater:["song",{curve:1,longtail:1},"Bee-eaters","They rub the sting out of a bee before eating it."],
+roller:["song",{bs:1.2,longtail:1},"Rollers","They are named for their rolling display flights."],
+hoopoe:["song",{curve:1},"Hoopoes and wood hoopoes","They probe for insects with long curved bills."],
+forest:["song",{bs:1.4},"Motmots, jacamars and relatives","These tropical American birds often watch from a perch before darting out."],
+trogon:["song",{bs:.8,longtail:1},"Trogons and quetzals","Two toes point forward and two point back."],
+paradise:["quetzal",{},"Birds-of-paradise","Males show off with plumes and elaborate displays."],
+crow:["song",{bs:1.35},"Crows, ravens and magpies","This family is famous for solving problems."],
+jay:["song",{longtail:1},"Jays and magpies","Many jays hide food to eat later."],
+sunbird:["song",{curve:.7},"Sunbirds","They sip nectar with slim curved bills."],
+parrot:["parrot",{},"Parrots","Two toes forward and two back give a strong grip."],
+macaw:["parrot",{macaw:1},"Macaws","Strong bills let macaws crack very hard nuts."],
+cockatoo:["parrot",{tuft:1},"Cockatoos","Cockatoos can raise and lower their crests."],
+toucan:["toucan",{},"Toucans","A toucan's big bill is very light for its size."],
+hornbill:["toucan",{casque:1},"Hornbills","In most species the female seals herself into a tree hole to nest."],
+cuckoo:["song",{longtail:1},"Cuckoos and relatives","Some cuckoos lay their eggs in other birds' nests."],
+turaco:["song",{longtail:1,bs:.9},"Turacos and the hoatzin","These birds mostly eat plants."]
+};
+
+const lum=h=>{const n=parseInt(h.slice(1),16);return (n>>16)*.3+((n>>8)&255)*.59+(n&255)*.11};
+function makeLook(famKey,code,flags){
+  const [shape,x]=FAM[famKey], [H,B,W,Y,K]=[...code].map(c=>COLORS[c]);
+  const f={}; for(const m of flags.matchAll(/([KBEM])([a-z])|([CLFSWMT])/g)){ if(m[1]) f[m[1]]=COLORS[m[2]]; else f[m[3]]=true }
+  const mark=lum(Y)>120?"#3a3029":"#efe6d2", pink=famKey==="flamingo";
+  const k={...x,gen:1,head:H,body:B,wing:W,belly:Y,beak:K,tail:W,eye:"#1a120c"};
+  if(shape==="song"){
+    if(f.K)k.cap=f.K; if(f.B)k.bib=f.B; if(f.E)k.cheek=f.E; if(f.M)k.mask=typeof f.M==="string"?f.M:"#17171a";
+    if(f.C)k.crest=H; if(f.L)k.longtail=1; if(f.F)k.fork=1; if(f.S)k.spots=mark; if(f.W)k.bars="#f4efe2";
+    if(k.curve){k.curveColor=K;k.beak="none"}
+  }else{
+    k.mCap=f.K; k.mBib=f.B; k.mCheek=f.E; k.mMask=f.M===true?"#17171a":f.M; k.mCrest=f.C?(f.K||H):null; k.mSpots=f.S?mark:null; k.train=f.T;
+  }
+  if(shape==="duck"){k.breast=Y;k.ring=H}
+  if(shape==="wader"){k.neck=H;k.legs=pink?"#e2677a":lum(B)>200?"#3a3d42":"#6d6455";k.beaktip="#1c1c20";if(k.curve||k.thick){k.beakColor=K;k.beak="none"}}
+  if(shape==="shore"){k.legs="#8a7448";if(k.curve){k.beakColor=K;k.beak="none"}}
+  if(shape==="pigeon"){k.legs="#c9707a";if(x.tipped){k.tip=lum(W)>180?"#23272d":W;k.legs="#cf9d3a"}}
+  if(shape==="raptor"){k.legs="#e0b62f";k.eye="#c98d14";if(x.ruffed){k.ruff=W;k.legs="#a9a49c"}}
+  if(shape==="owl"){k.face=Y;k.rim=W;k.spots=f.S?mark:W;k.eye=lum(Y)>200&&famKey==="barnowl"?"#17120f":"#f2bd16"}
+  if(shape==="parrot"){k.wing2=W;k.face=x.macaw?(f.E||"#f1e6dc"):H;k.mCheek=x.macaw?null:f.E;k.beak2=lum(K)>120?"#4a4246":K}
+  if(shape==="toucan"){k.bib=Y;k.vent=Y;k.ringc="#3a8fd0";k.beaktip=lum(K)>90?"#2a2326":K}
+  if(shape==="puffin"){k.face=H;k.beak2=K;k.legs="#e0752f"}
+  if(shape==="hummer"){k.body=B;k.throat=f.B||Y}
+  if(shape==="fowl"){k.legs=x.longleg?"#9a9440":"#8a6f52"}
+  return k;
+}
+
+(function addSpecies(){
+  for(const block of document.querySelectorAll('script[data-tier]')){
+    let fam="songbird";
+    for(const raw of block.textContent.split("\n")){
+      const line=raw.trim(); if(!line) continue;
+      if(line[0]==="="){fam=line.slice(1);continue}
+      const [name,sci,code,flags=""]=line.split("|");
+      const id=sci.toLowerCase().replace(/[^a-z]+/g,"-");
+      BIRDS.push({id,name,sci,tier:block.dataset.tier,fam,shape:FAM[fam][0],look:makeLook(fam,code,flags)});
+    }
+  }
+})();
+
+const HEADS={duck:k=>k.long?[152,36,15,157,32]:[142,58,21,149,52],pigeon:()=>[146,52,14,142,50],wader:()=>[145,29,12,148,27],raptor:k=>k.ruff?[124,36,17,133,31]:[124,40,22,133,35],parrot:()=>[120,44,23,128,38],toucan:()=>[101,48,17,103,45],puffin:()=>[112,47,18,113,45],hummer:()=>[116,62,16,121,57],quetzal:()=>[124,34,17,129,31],fowl:()=>[137,52,15,142,49],penguin:()=>[103,42,21,112,38],shore:()=>[131,60,17,136,56],ratite:()=>[137,28,11,140,25],kiwi:()=>[130,70,17,134,66]};
+function extras(shape,k){
+  if(!k.gen) return "";
+  let o="";
+  if(shape==="song"){
+    if(k.curve) o+=L(`M145 59 Q${150+16*k.curve} 59 ${148+24*k.curve} ${64+14*k.curve}`,k.curveColor,3.5);
+    if(k.bigeye) o+=eye(134,56,k.eye,5.5);
+    return o;
+  }
+  if(shape==="owl"){
+    if(k.tufts) o+=P("M66 36 L56 6 L90 24Z",k.wing)+P("M134 36 L144 6 L110 24Z",k.wing);
+    return o;
+  }
+  const [hx,hy,r,ex,ey]=HEADS[shape](k);
+  if(k.mSpots){const [bx,by]={penguin:[108,92],wader:[88,86],shore:[96,84],duck:[100,104],raptor:[112,90]}[shape]||[96,92];
+    o+=dots([[-18,-6],[-6,4],[8,-3],[18,8],[-10,14],[6,15],[-24,8],[2,-12]].map(([x,y])=>[bx+x,by+y]),k.mSpots,2)}
+  if(k.mCrest||k.tuft) o+=P(`M${hx-r*.7} ${hy-r*.6} Q${hx-r*1.2} ${hy-r*1.7} ${hx-r*1.5} ${hy-r*1.6} Q${hx-r*.2} ${hy-r*1.9} ${hx+r*.45} ${hy-r*.85}Z`,k.mCrest||(lum(k.head)>200?"#f4cb23":k.head));
+  if(k.mCap) o+=P(`M${hx-r*.88} ${hy-r*.46} Q${hx} ${hy-r*1.55} ${hx+r*.88} ${hy-r*.46} Q${hx} ${hy-r*.72} ${hx-r*.88} ${hy-r*.46}Z`,k.mCap);
+  if(k.mCheek) o+=E(hx+r*.1,hy+r*.28,r*.55,r*.32,k.mCheek);
+  if(k.mBib) o+=E(hx+r*.25,hy+r*.8,r*.5,r*.36,k.mBib);
+  if(k.pouch) o+=P("M162 40 Q186 46 190 52 Q170 72 154 48Z","#e9a64a")+L("M162 36 L192 52",k.beak,5);
+  if(k.hook) o+=L("M162 34 Q186 34 186 46",k.beak,4);
+  if(k.curve) o+=shape==="shore"?L("M145 60 Q176 60 186 90",k.beakColor,3.5):L("M155 28 Q184 28 186 62",k.beakColor,5);
+  if(k.thick) o+=P("M153 21 L192 40 L152 37Z",k.beakColor);
+  if(k.spoon) o+=E(186,35,9,6,k.beak);
+  if(k.casque) o+=P("M114 36 Q132 12 166 38 Q140 28 118 42Z",k.beak);
+  if(k.mMask) o+=L(`M${ex-r*.65} ${ey+1} L${ex+r*.4} ${ey}`,k.mMask,r*.42);
+  if(k.mMask||k.mCap||k.mCheek) o+=eye(ex,ey,k.eye,r>14?3.2:2.4);
+  return o;
+}
+const art = b=>`<svg viewBox="0 0 200 150" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Drawing of ${b.name}">${SHAPES[b.shape](b.look)}${extras(b.shape,b.look)}</svg>`;
+const backArt = ()=>`<div class="back"><svg viewBox="0 0 100 140" aria-hidden="true"><rect x="6" y="6" width="88" height="128" rx="12" fill="none" stroke="#7fd0c6" stroke-width="1.5"/><circle cx="50" cy="70" r="30" fill="#146571"/><path d="M33 91 C34 66 48 48 70 45 C70 70 56 84 33 91Z" fill="#f2c24a"/><path d="M28 98 C40 82 52 66 66 50" fill="none" stroke="#0f4f59" stroke-width="2.4" stroke-linecap="round"/></svg></div>`;
+const BY_ID = Object.fromEntries(BIRDS.map(b=>[b.id,b]));
+const BY_TIER = Object.fromEntries(TIERS.map(t=>[t.id,BIRDS.filter(b=>b.tier===t.id)]));
+const tierOf = id=>TIERS.find(t=>t.id===id);
+const big = b=>["epic","legendary","only"].includes(b.tier);
+
+const random = ()=>crypto.getRandomValues(new Uint32Array(1))[0]/4294967296;
+function drawCard(){
+  let r=random()*100, tier=TIERS[0];
+  for(const t of TIERS){ if(r<t.chance){tier=t;break} r-=t.chance }
+  const pool=BY_TIER[tier.id];
+  return pool[Math.floor(random()*pool.length)].id;
+}
+
+const empty = ()=>({lastPullTime:0, storedPacks:1, pack:[], done:true, counts:{}, packs:0});
+
+function clean(raw){
+  const s=empty(); if(!raw||typeof raw!=="object") return s;
+  s.lastPullTime=Number.isInteger(raw.lastPullTime)?raw.lastPullTime:0;
+  s.storedPacks=Number.isInteger(raw.storedPacks)?raw.storedPacks:1;
+  if(Array.isArray(raw.pack)) s.pack=raw.pack.filter(id=>Object.hasOwn(BY_ID,id)).slice(0,PACK_SIZE);
+  s.done=raw.done!==false||!s.pack.length;
+  for(const b of BIRDS){const n=raw.counts?.[b.id]; if(Number.isInteger(n)&&n>0) s.counts[b.id]=n}
+  s.packs=Number.isInteger(raw.packs)?raw.packs:0;
+
+  // Calculate offline accumulated packs
+  const now = Date.now();
+  if (s.lastPullTime > 0) {
+    const elapsed = now - s.lastPullTime;
+    const newGains = Math.floor(elapsed / COOLDOWN_MS);
+    if (newGains > 0) {
+      s.storedPacks = Math.min(MAX_STORED_PACKS, s.storedPacks + newGains);
+      s.lastPullTime = s.lastPullTime + (newGains * COOLDOWN_MS);
+    }
+  } else {
+    s.lastPullTime = now;
+  }
+  return s;
+}
+
+const $=id=>document.getElementById(id);
+let AC=null, master=null, scene=null, muted=false;
+try{muted=localStorage.getItem("daily-flock-muted")==="1"}catch{}
+function audio(){
+  if(muted) return null;
+  try{
+    if(!AC){
+      AC=new (window.AudioContext||window.webkitAudioContext)();
+      const squash=AC.createDynamicsCompressor(); squash.connect(AC.destination);
+      master=AC.createGain(); master.gain.value=.55; master.connect(squash);
+    }
+    if(AC.state!=="running") AC.resume().catch(()=>{});
+    if(!scene){scene=AC.createGain(); scene.connect(master)}
+    return AC;
+  }catch{return null}
+}
+function stopSound(){ if(scene){scene.disconnect();scene=null} }
+function tone(f,{at=0,dur=.3,type="sine",vol=.2,to=null,attack=.012,cut=0}={}){
+  if(!audio()) return;
+  const t=AC.currentTime+at, o=AC.createOscillator(), g=AC.createGain();
+  o.type=type; o.frequency.setValueAtTime(f,t); if(to) o.frequency.exponentialRampToValueAtTime(to,t+dur);
+  g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+attack); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  if(cut){const lp=AC.createBiquadFilter();lp.type="lowpass";lp.frequency.value=cut;o.connect(lp);lp.connect(g)} else o.connect(g);
+  g.connect(scene); o.start(t); o.stop(t+dur+.05);
+}
+function noise({at=0,dur=.15,vol=.15,from=900,to=3500}={}){
+  if(!audio()) return;
+  const t=AC.currentTime+at, n=Math.ceil(AC.sampleRate*dur), buf=AC.createBuffer(1,n,AC.sampleRate), d=buf.getChannelData(0);
+  for(let i=0;i<n;i++) d[i]=Math.random()*2-1;
+  const s=AC.createBufferSource(), f=AC.createBiquadFilter(), g=AC.createGain();
+  s.buffer=buf; f.type="bandpass"; f.frequency.setValueAtTime(from,t); f.frequency.exponentialRampToValueAtTime(to,t+dur);
+  g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+dur*.3); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  s.connect(f); f.connect(g); g.connect(scene); s.start(t);
+}
+const chirp=(at,f=2200,vol=.08)=>{tone(f,{at,dur:.09,to:f*1.5,vol});tone(f*1.3,{at:at+.11,dur:.08,to:f*.9,vol})};
+const sparkle=(at,n,vol=.06)=>{for(let i=0;i<n;i++) tone(1500+Math.random()*2600,{at:at+i*.07,dur:.25,vol,type:"triangle"})};
+const chord=(notes,at,dur,vol,type="sawtooth")=>notes.forEach(f=>{tone(f,{at,dur,vol,type,cut:2200,attack:.04});tone(f*1.005,{at,dur,vol:vol*.7,type,cut:1800,attack:.06})});
+const SOUND={
+  common(){chirp(.12)},
+  rare(){tone(659,{at:.1,dur:.35,type:"triangle",vol:.22});tone(988,{at:.24,dur:.55,type:"triangle",vol:.22});chirp(.5,2600,.05)},
+  epic(){tone(110,{dur:.5,vol:.35,to:55});[523,659,784,1047,1319].forEach((f,i)=>tone(f,{at:i*.09,dur:.6,type:"triangle",vol:.2}));sparkle(.45,8)},
+  legendary(){tone(98,{dur:.9,vol:.45,to:40});noise({dur:.8,vol:.2,from:6000,to:500});
+    chord([392,494,587],0,.22,.1);chord([392,494,587],.22,.2,.1);chord([523,659,784,1047],.44,1.5,.11);sparkle(.55,18)},
+  only(){tone(75,{dur:1.6,vol:.55,to:30});noise({dur:1.4,vol:.28,from:8000,to:300});
+    [392,523,659,784,1047,1319,1568,2093].forEach((f,i)=>tone(f,{at:i*.08,dur:.5,type:"triangle",vol:.17}));
+    chord([349,440,523,698],.68,.5,.09);chord([392,494,587,784],1.15,.5,.09);chord([523,659,784,1047,1319],1.62,2.4,.1);
+    sparkle(.8,36);[1.9,2.4,2.75,3.3].forEach((at,i)=>chirp(at,2000+i*350,.09))},
+  charge(tier,sec){
+    tone(110,{dur:sec,to:tier==="epic"?440:tier==="legendary"?660:990,type:"sawtooth",vol:.09,cut:1400,attack:sec*.8});
+    noise({dur:sec,vol:.1,from:200,to:5000});
+    if(tier!=="epic") for(let t=0,gap=.28;t<sec-.1;t+=gap,gap=Math.max(.09,gap*.83)) tone(62,{at:t,dur:.14,vol:.45,to:40});
+  }
+};
+
+const calm=()=>matchMedia("(prefers-reduced-motion:reduce)").matches;
+const FX={
+  common:{wait:0,glow:"#9fb3ad",bits:0},
+  rare:{wait:0,glow:"#3b9bff",bits:26,colors:["#3b9bff","#a9d6ff","#ffffff"]},
+  epic:{wait:750,glow:"#a855f7",bits:80,colors:["#a855f7","#e0bbff","#ff8ad8","#ffffff"],shout:"Epic!"},
+  legendary:{wait:1500,glow:"#ffb703",bits:170,colors:["#ffb703","#ffe27a","#ff7b00","#ffffff"],shout:"LEGENDARY!"},
+  only:{wait:2300,glow:"#ff5fa2",bits:240,colors:["#ff5f8f","#ffb43a","#47d6a4","#3ea6ff","#a45cff","#ffffff"],shout:"ONE AND ONLY!"}
+};
+let timers=[], bits=[], raf=0;
+const later=(ms,fn)=>timers.push(setTimeout(fn,ms));
+function clearFx(){
+  timers.forEach(clearTimeout); timers=[]; bits=[]; stopSound();
+  document.body.classList.remove("lit"); $("rays").className=""; $("flash").className="";
+  const c=$("sparks"); c.getContext("2d").clearRect(0,0,c.width,c.height);
+}
+function burst(x,y,fx,n){
+  for(let i=0;i<n;i++){
+    const a=Math.random()*Math.PI*2, v=3+Math.random()*11;
+    bits.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-3,r:3+Math.random()*6,a,spin:Math.random()*.3-.15,life:1,fade:.007+Math.random()*.012,color:fx.colors[i%fx.colors.length],kind:i%3});
+  }
+  if(!raf) raf=requestAnimationFrame(frame);
+}
+function frame(){
+  const c=$("sparks"), g=c.getContext("2d"), d=Math.min(devicePixelRatio||1,2);
+  if(c.width!==Math.round(innerWidth*d)||c.height!==Math.round(innerHeight*d)){c.width=Math.round(innerWidth*d);c.height=Math.round(innerHeight*d)}
+  g.setTransform(d,0,0,d,0,0); g.clearRect(0,0,innerWidth,innerHeight);
+  bits=bits.filter(p=>p.life>0&&p.y<innerHeight+30);
+  for(const p of bits){
+    p.x+=p.vx; p.y+=p.vy; p.vx*=.96; p.vy=p.vy*.96+.22; p.a+=p.spin; p.life-=p.fade;
+    g.save(); g.translate(p.x,p.y); g.rotate(p.a); g.globalAlpha=Math.max(0,Math.min(1,p.life*1.6)); g.fillStyle=p.color;
+    g.beginPath();
+    if(p.kind===0) g.ellipse(0,0,p.r*1.8,p.r*.55,0,0,7);
+    else if(p.kind===1){for(let i=0;i<8;i++){const r=i%2?p.r*.35:p.r*1.3,a=i*Math.PI/4;g.lineTo(Math.cos(a)*r,Math.sin(a)*r)}}
+    else g.rect(-p.r*.6,-p.r*.6,p.r*1.2,p.r*1.2);
+    g.fill(); g.restore();
+  }
+  raf=bits.length?requestAnimationFrame(frame):0;
+}
+function reveal(box,bird,onShown){
+  const fx=FX[bird.tier], wait=calm()?(fx.wait?300:0):fx.wait;
+  audio(); noise({dur:.14,vol:.12});
+  box.className=`big t-${bird.tier}`; box.style.setProperty("--glow",fx.glow);
+  const centre=()=>{const r=box.getBoundingClientRect();return [r.left+r.width/2,r.top+r.height/2]};
+  const rays=(cls)=>{const [x,y]=centre(),el=$("rays");el.style.left=x+"px";el.style.top=y+"px";el.style.setProperty("--glow",fx.glow);el.className=cls};
+  if(wait){
+    document.body.classList.add("lit"); box.classList.add("charging"); box.style.setProperty("--wait",wait+"ms");
+    SOUND.charge(bird.tier,wait/1000);
+  }
+  const show=()=>{
+    box.classList.remove("charging"); box.classList.add("glow");
+    box.querySelector(".front").innerHTML=cardHTML(bird);
+    box.querySelector(".flip").classList.add("up");
+    box.querySelector("button").setAttribute("aria-label",bird.name);
+    SOUND[bird.tier]();
+    if(fx.shout){
+      const s=$("shout"); if(s){s.textContent=fx.shout;s.className=`shout ${bird.tier}`;s.parentElement.classList.add("shouting")}
+      box.classList.add("pop"); rays(`on ${bird.tier}`);
+    }
+    if(!calm()){
+      const [x,y]=centre();
+      if(fx.bits) later(220,()=>burst(x,y,fx,fx.bits));
+      if(bird.tier==="legendary"||bird.tier==="only"){$("flash").className=bird.tier;box.classList.add("quake");if(navigator.vibrate)try{navigator.vibrate(bird.tier==="only"?[120,60,120,60,300]:[100,60,200])}catch{}}
+      if(bird.tier==="legendary") later(700,()=>burst(x,y,fx,70));
+      if(bird.tier==="only") [700,1250,1800,2400].forEach((ms,i)=>later(ms,()=>burst(innerWidth*(i%2?.8:.2),innerHeight*(.22+.1*(i%3)),fx,90)));
+    }
+    onShown?.();
+  };
+  if(wait) later(wait,show); else show();
+}
+
+const KEY="daily-flock-v1";
+let state=empty(), ready=false, busy=false, tab="home", step=0, flipped=false, preview=null, fresh=false;
+let bookTier="common", bookQuery="", bookShown=30;
+let homeBirdId=null;
+
+const say = msg=>{$("status").textContent=msg};
+function readLocal(){try{return clean(JSON.parse(localStorage.getItem(KEY)))}catch{return empty()}}
+
+async function save(next){
+  try{localStorage.setItem(KEY,JSON.stringify(next))}catch{say("Your browser settings are preventing saves.")}
+  state=next;
+}
+
+function boot(){
+  state=readLocal();
+  ready=true;
+  render();
+}
+
+async function openPack(){
+  if(busy||!ready) return; audio(); busy=true; render();
+  state = readLocal();
+  if(state.storedPacks > 0){
+    const pack=Array.from({length:PACK_SIZE},drawCard), counts={...state.counts};
+    pack.forEach(id=>counts[id]=(counts[id]||0)+1);
+    const next=clean({
+      ...state,
+      lastPullTime: Date.now(),
+      storedPacks: state.storedPacks - 1,
+      pack,
+      done:false,
+      counts,
+      packs:state.packs+1
+    });
+    await save(next);
+    step=0; flipped=false;
+  }
+  busy=false; render();
+}
+
+async function finishPack(){
+  if(busy) return; busy=true; clearFx();
+  const next={...state,done:true};
+  await save(next);
+  busy=false; fresh=true; render(); fresh=false; scrollTo(0,0);
+}
+
+function shownCounts(){
+  const c={...state.counts};
+  if(!state.done && state.pack.length) state.pack.slice(step+(flipped?1:0)).forEach(id=>{if(c[id]) c[id]--});
+  return c;
+}
+function cardHTML(b){
+  const t=tierOf(b.tier);
+  return `<span class="face ${b.tier}"><span class="nm">${b.name}</span><span class="art">${art(b)}</span><span class="ft"><span class="sci">${b.sci}</span><span class="tier"><span>${t.name}</span><span class="pips">${"◆".repeat(t.pips)}</span></span></span></span>`;
+}
+const isNew = i=>{const id=state.pack[i];return state.pack.indexOf(id)===i && state.counts[id]===state.pack.filter(x=>x===id).length};
+
+function timeUntilNextPack(){
+  state = readLocal();
+  if (state.storedPacks >= MAX_STORED_PACKS) return "Storage Full";
+  const nextTime = state.lastPullTime + COOLDOWN_MS;
+  const rem = Math.max(0, nextTime - Date.now());
+  const hours = Math.floor(rem / (1000 * 60 * 60));
+  const mins = Math.floor((rem % (1000 * 60 * 60)) / (1000 * 60));
+  const secs = Math.floor((rem % (1000 * 60)) / 1000);
+  return `${hours}h ${mins}m ${secs}s`;
+}
+
+const oddsHTML = ()=>`<div class="odds"><h2>Chance for each card</h2><p class="note">Tap a rarity to preview its reveal.</p>${TIERS.map(t=>`<button data-preview="${t.id}"><span><span class="sw ${t.id}"></span>${t.name}</span><span class="pc">${t.chance}% ▶</span></button>`).join("")}</div>`;
+const stageHTML = ()=>`<div class="top"><div class="dots"></div><div id="shout" aria-hidden="true"></div></div>
+  <div class="big" id="box"><button class="card" id="reveal" aria-label="Face-down card. Tap to flip"><span class="flip"><span class="side">${backArt()}</span><span class="side front"></span></span></button></div>
+  <p id="says" aria-live="polite"></p>`;
+const SAMPLE={common:"pigeon",rare:"bluejay",epic:"baldeagle",legendary:"shoebill",only:"kakapo"};
+
+/* ---------- Home Screen (Fact Catalog) ---------- */
+function getUnlockedBirds(){
+  const counts=shownCounts();
+  const unlocked=BIRDS.filter(b=>(counts[b.id]||0)>0);
+  return unlocked.length?unlocked:BIRDS.slice(0,8);
+}
+function pickNextRandomBird(){
+  const pool=getUnlockedBirds();
+  if(pool.length===1) return pool[0];
+  let next;
+  do { next=pool[Math.floor(Math.random()*pool.length)] } while(next.id===homeBirdId);
+  return next;
+}
+function renderHome(v){
+  const pool=getUnlockedBirds();
+  if(!homeBirdId || !pool.some(b=>b.id===homeBirdId)) {
+    homeBirdId=pool[Math.floor(Math.random()*pool.length)].id;
+  }
+  const bird=BY_ID[homeBirdId];
+  const fam=bird.fam&&FAM[bird.fam];
+  const factText=bird.fact||`<strong>${fam[2]}.</strong> ${fam[3]}`;
+  const totalOwned=Object.values(shownCounts()).filter(n=>n>0).length;
+
+  v.innerHTML=`<div class="stack center">
+    <h2>Daily Bird Fact</h2>
+    <p class="note">${totalOwned > 0 ? `Random fact from your unlocked flock (${totalOwned} birds)` : 'Tap card to generate another random bird fact!'}</p>
+    <div class="fact-card-btn" id="fact-card-trigger">
+      <div class="card" aria-label="${bird.name}">${cardHTML(bird)}</div>
+    </div>
+    <div class="fact-box">
+      <div class="bird-tag">${bird.name}</div>
+      <p>${factText}</p>
+    </div>
+    <button class="btn quiet" id="random-fact-btn">Tap for next random bird fact ✨</button>
+  </div>`;
+
+  const swapFact=()=>{
+    audio();
+    SOUND.common();
+    homeBirdId=pickNextRandomBird().id;
+    renderHome(v);
+  };
+  $("fact-card-trigger").onclick=swapFact;
+  $("random-fact-btn").onclick=swapFact;
+}
+
+function renderPreview(v){
+  const b=BY_ID[SAMPLE[preview]];
+  v.innerHTML=`<div class="stack center reveal">${stageHTML()}<button class="btn" id="again">Play again</button><button class="btn quiet" id="done">Done</button></div>`;
+  v.querySelector(".dots").textContent=`${tierOf(preview).name} preview`;
+  $("says").textContent="Preview only. This card is not added to your collection.";
+  const run=()=>reveal($("box"),b);
+  $("again").onclick=()=>{audio();render()};
+  $("done").onclick=()=>{preview=null;render()};
+  later(250,run);
+}
+function renderReveal(v){
+  const b=BY_ID[state.pack[step]], last=step===state.pack.length-1;
+  let charging=false;
+  v.innerHTML=`<div class="stack center reveal">${stageHTML()}
+    <button class="btn" id="next">Flip card</button>
+    <button class="btn quiet" id="skip">Skip to the best cards</button></div>`;
+  v.querySelector(".dots").innerHTML=state.pack.map((_,i)=>`<i class="${i<=step?"on":""}"></i>`).join("");
+  v.querySelector(".dots").setAttribute("aria-label",`Card ${step+1} of ${state.pack.length}`);
+  const label=()=>{$("next").disabled=charging;$("next").textContent=charging?"Something big is coming…":!flipped?"Flip card":last?"See all my cards":"Next card";
+    $("says").textContent=charging?"":!flipped?`Card ${step+1} of ${state.pack.length}`:isNew(step)?`New bird! ${b.name} joins your collection.`:`Duplicate. You now have ${shownCounts()[b.id]} of ${b.name}.`};
+  const advance=()=>{
+    if(charging) return;
+    if(!flipped){
+      charging=!!FX[b.tier].wait; label();
+      reveal($("box"),b,()=>{charging=false;flipped=true;label();renderTotal()});
+    }else if(last) finishPack();
+    else{step++;flipped=false;render()}
+  };
+  $("reveal").onclick=advance; $("next").onclick=advance;
+  $("skip").onclick=()=>{
+    const from=flipped?step+1:step, j=state.pack.findIndex((id,i)=>i>=from&&big(BY_ID[id]));
+    if(j<0) finishPack();
+    else if(j===step) advance();
+    else{step=j;flipped=false;render()}
+  };
+  if(flipped){$("box").querySelector(".front").innerHTML=cardHTML(b);$("box").querySelector(".flip").classList.add("up")}
+  label();
+}
+
+function renderToday(v){
+  state = readLocal();
+  if(!ready){v.innerHTML=`<p class="note" style="text-align:center;padding:40px 0">Loading your collection…</p>`;return}
+  if(preview) return renderPreview(v);
+  
+  if(!state.done) return renderReveal(v);
+
+  const packsAvailable = state.storedPacks;
+  
+  if(packsAvailable > 0){
+    v.innerHTML=`<div class="stack center">
+      <div class="deck">${backArt()}${backArt()}${backArt()}</div>
+      <div>
+        <span class="store-pill">${packsAvailable} / ${MAX_STORED_PACKS} Packs Ready</span>
+        <h2>${state.packs?"Your next pack is ready":"Your first pack is waiting"}</h2>
+      </div>
+      <button class="btn" id="open" ${busy?"disabled":""}>${busy?"Opening…":`Open ${PACK_SIZE} cards`}</button>
+      <p class="note" style="margin-top:4px">Next pack in: <span id="timer">${timeUntilNextPack()}</span></p>
+      </div><div style="margin-top:28px">${oddsHTML()}</div>`;
+    $("open").onclick=openPack; return;
+  }
+
+  v.innerHTML=`<div class="stack">
+    <div>
+      <span class="store-pill" style="background:var(--muted)">0 / ${MAX_STORED_PACKS} Packs Ready</span>
+      <h2>Today's cards</h2>
+      <p class="note">Next pack unlock in <span id="timer">${timeUntilNextPack()}</span>.</p>
+    </div>
+    <div class="grid4${fresh?" deal":""}">${state.pack.map((id,i)=>`<button class="card" style="--i:${i}" data-id="${id}" aria-label="${BY_ID[id].name}">${isNew(i)?'<span class="badge">New</span>':""}${cardHTML(BY_ID[id])}</button>`).join("")}</div>
+    <p class="note">Tap a card to see it up close.</p>
+    ${oddsHTML()}</div>`;
+}
+
+function renderGrid(){
+  const c=shownCounts(), q=bookQuery.trim().toLowerCase();
+  const own=b=>c[b.id]>0;
+  const list=q?BIRDS.filter(b=>own(b)&&`${b.name} ${b.sci} ${b.fam?FAM[b.fam][2]:""}`.toLowerCase().includes(q))
+    :[...BY_TIER[bookTier].filter(own),...BY_TIER[bookTier].filter(b=>!own(b))];
+  $("chips").hidden=!!q;
+  $("count").textContent=q?`${list.length} of your birds match`:`${BY_TIER[bookTier].filter(own).length} of ${list.length} ${tierOf(bookTier).name} birds found`;
+  $("grid").innerHTML=list.slice(0,bookShown).map(b=>own(b)
+    ?`<button class="card" data-id="${b.id}" aria-label="${b.name}, you have ${c[b.id]}">${c[b.id]>1?`<span class="badge">×${c[b.id]}</span>`:""}${cardHTML(b)}</button>`
+    :`<div class="card unknown ${b.tier}" role="img" aria-label="Undiscovered ${tierOf(b.tier).name} bird"><span class="face"><span class="nm">???</span><span class="art" aria-hidden="true">${art(b)}</span><span class="ft">${tierOf(b.tier).name}</span></span></div>`).join("");
+  $("more").hidden=list.length<=bookShown;
+}
+function renderBook(v){
+  if(!ready) return renderToday(v);
+  v.innerHTML=`<div class="stack">
+    <input id="search" type="search" placeholder="Search your birds" aria-label="Search your birds" autocomplete="off">
+    <div id="chips">${TIERS.map(t=>`<button data-tier-pick="${t.id}" aria-pressed="${t.id===bookTier}"><span class="sw ${t.id}"></span>${t.name}</button>`).join("")}</div>
+    <p id="count" class="note"></p><div id="grid" class="grid3"></div>
+    <button class="btn quiet" id="more">Show more</button></div>`;
+  $("search").value=bookQuery;
+  $("search").oninput=e=>{bookQuery=e.target.value;bookShown=30;renderGrid()};
+  $("more").onclick=()=>{bookShown+=30;renderGrid()};
+  $("chips").onclick=e=>{const el=e.target.closest("[data-tier-pick]");if(!el)return;bookTier=el.dataset.tierPick;bookShown=30;
+    $("chips").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===el));renderGrid()};
+  renderGrid();
+}
+function renderTotal(){
+  const c=shownCounts();
+  $("total").textContent=ready?`${Object.values(c).filter(n=>n>0).length} of ${BIRDS.length.toLocaleString("en-US")} birds found`:"";
+}
+function render(){
+  clearFx();
+  const v=$("view");
+  if(tab==="home") renderHome(v);
+  else if(tab==="today") renderToday(v);
+  else renderBook(v);
+  renderTotal();
+  for(const [id,name] of [["tab-home","home"],["tab-today","today"],["tab-book","book"]]){
+    if(tab===name) $(id).setAttribute("aria-current","page"); else $(id).removeAttribute("aria-current");
+  }
+}
+function openSheet(id){
+  const b=BY_ID[id], n=shownCounts()[id], s=$("sheet"), fam=b.fam&&FAM[b.fam];
+  s.innerHTML=`<div class="inner"><div class="big t-${b.tier}" id="tilt" style="--glow:${FX[b.tier].glow}"><div class="card">${cardHTML(b)}</div></div><div class="info"><p>${b.fact||`<strong>${fam[2]}.</strong> ${fam[3]}`}</p><p class="note" style="margin-top:6px">You have ${n} ${n===1?"copy":"copies"}.</p></div><button class="btn" id="close">Close</button></div>`;
+  s.hidden=false; $("close").onclick=closeSheet; $("close").focus({preventScroll:true});
+  if(big(b)){clearFx();audio();SOUND.rare()}
+  const el=$("tilt");
+  if(!calm()){
+    el.onpointermove=e=>{const r=el.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+      el.firstElementChild.style.transform=`rotateY(${x*24}deg) rotateX(${-y*24}deg)`};
+    el.onpointerleave=el.onpointercancel=el.onpointerup=()=>{el.firstElementChild.style.transform=""};
+  }
+}
+function closeSheet(){$("sheet").hidden=true}
+$("view").addEventListener("click",e=>{
+  const p=e.target.closest("[data-preview]");
+  if(p){preview=p.dataset.preview;audio();render();scrollTo(0,0);return}
+  const el=e.target.closest("[data-id]"); if(el) openSheet(el.dataset.id)});
+$("sheet").addEventListener("click",e=>{if(e.target===$("sheet")) closeSheet()});
+addEventListener("keydown",e=>{if(e.key==="Escape") closeSheet()});
+$("tab-home").onclick=()=>{tab="home";preview=null;render();scrollTo(0,0)};
+$("tab-today").onclick=()=>{tab="today";preview=null;render();scrollTo(0,0)};
+$("tab-book").onclick=()=>{tab="book";preview=null;render();scrollTo(0,0)};
+function soundLabel(){$("mute").textContent=muted?"Sound off":"Sound on";$("mute").setAttribute("aria-pressed",!muted)}
+$("mute").onclick=()=>{muted=!muted;try{localStorage.setItem("daily-flock-muted",muted?"1":"0")}catch{}
+  if(muted) stopSound(); else{audio();SOUND.common()} soundLabel()};
+soundLabel();
+
+function tick(){
+  state = readLocal();
+  if($("timer")) $("timer").textContent=timeUntilNextPack();
+}
+setInterval(tick, 1000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden) tick()});
+boot();
+</script>
+</body>
+</html>
